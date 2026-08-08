@@ -15,104 +15,19 @@ import {
 } from 'lucide-react';
 import { fetchStockReport } from '../services/api';
 import { FullStockResearchReport } from '../types';
+import nifty500Data from '../data/nifty500_stocks.json';
 
 interface StockAnalysisViewProps {
   initialSymbol?: string;
 }
 
-// Complete Directory of Real Verified NSE & BSE Equities (70+ Stocks across 10 Key Sectors)
-const REAL_NSE_BSE_STOCKS = [
-  // Banking & Financial Services
-  { symbol: 'SBIN', name: 'State Bank of India', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'HDFCBANK', name: 'HDFC Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'ICICIBANK', name: 'ICICI Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'AXISBANK', name: 'Axis Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'KOTAKBANK', name: 'Kotak Mahindra Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'INDUSINDBK', name: 'IndusInd Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'BAJFINANCE', name: 'Bajaj Finance Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'BAJAJFINSV', name: 'Bajaj Finserv Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'JIOFIN', name: 'Jio Financial Services Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'REC', name: 'REC Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'PFC', name: 'Power Finance Corp. Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'IRFC', name: 'Indian Railway Finance Corp.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'SHRIRAMFIN', name: 'Shriram Finance Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-  { symbol: 'PAYTM', name: 'One97 Communications (Paytm)', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
-
-  // Information Technology
-  { symbol: 'TCS', name: 'Tata Consultancy Services Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-  { symbol: 'INFY', name: 'Infosys Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-  { symbol: 'WIPRO', name: 'Wipro Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-  { symbol: 'HCLTECH', name: 'HCL Technologies Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-  { symbol: 'TECHM', name: 'Tech Mahindra Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-  { symbol: 'LTIM', name: 'LTIMindtree Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-  { symbol: 'PERSISTENT', name: 'Persistent Systems Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-  { symbol: 'COFORGE', name: 'Coforge Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
-
-  // Energy, Oil, Power & Utilities
-  { symbol: 'RELIANCE', name: 'Reliance Industries Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'NTPC', name: 'NTPC Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'ONGC', name: 'Oil and Natural Gas Corp. Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'POWERGRID', name: 'Power Grid Corp. of India', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'BPCL', name: 'Bharat Petroleum Corp. Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'IOC', name: 'Indian Oil Corp. Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'GAIL', name: 'GAIL (India) Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'COALINDIA', name: 'Coal India Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'TATAPOWER', name: 'Tata Power Company Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'ADANIGREEN', name: 'Adani Green Energy Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-  { symbol: 'ADANIPOWER', name: 'Adani Power Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
-
-  // Automotive & Mobility
-  { symbol: 'TATAMOTORS', name: 'Tata Motors Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
-  { symbol: 'MARUTI', name: 'Maruti Suzuki India Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
-  { symbol: 'M&M', name: 'Mahindra & Mahindra Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
-  { symbol: 'BAJAJ-AUTO', name: 'Bajaj Auto Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
-  { symbol: 'EICHERMOT', name: 'Eicher Motors Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
-  { symbol: 'HEROMOTOCO', name: 'Hero MotoCorp Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
-  { symbol: 'TVSMOTOR', name: 'TVS Motor Company Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
-
-  // Pharma & Healthcare
-  { symbol: 'SUNPHARMA', name: 'Sun Pharmaceutical Industries', sector: 'Pharma & Healthcare', exchange: 'NSE/BSE' },
-  { symbol: 'CIPLA', name: 'Cipla Ltd.', sector: 'Pharma & Healthcare', exchange: 'NSE/BSE' },
-  { symbol: 'DRREDDY', name: "Dr. Reddy's Laboratories", sector: 'Pharma & Healthcare', exchange: 'NSE/BSE' },
-  { symbol: 'DIVISLAB', name: "Divi's Laboratories Ltd.", sector: 'Pharma & Healthcare', exchange: 'NSE/BSE' },
-  { symbol: 'APOLLOHOSP', name: 'Apollo Hospitals Enterprise', sector: 'Pharma & Healthcare', exchange: 'NSE/BSE' },
-  { symbol: 'LUPIN', name: 'Lupin Ltd.', sector: 'Pharma & Healthcare', exchange: 'NSE/BSE' },
-  { symbol: 'MANKIND', name: 'Mankind Pharma Ltd.', sector: 'Pharma & Healthcare', exchange: 'NSE/BSE' },
-
-  // FMCG, Retail & Consumer Tech
-  { symbol: 'ITC', name: 'ITC Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'HINDUNILVR', name: 'Hindustan Unilever Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'NESTLEIND', name: 'Nestle India Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'BRITANNIA', name: 'Britannia Industries Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'TATACONSUM', name: 'Tata Consumer Products', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'VBL', name: 'Varun Beverages Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'DABUR', name: 'Dabur India Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'TITAN', name: 'Titan Company Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'TRENT', name: 'Trent Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'DMART', name: 'Avenue Supermarts (DMart)', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-  { symbol: 'ZOMATO', name: 'Zomato Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
-
-  // Aerospace, Defense & Industrials
-  { symbol: 'BEL', name: 'Bharat Electronics Ltd.', sector: 'Defense & Industrials', exchange: 'NSE/BSE' },
-  { symbol: 'HAL', name: 'Hindustan Aeronautics Ltd.', sector: 'Defense & Industrials', exchange: 'NSE/BSE' },
-  { symbol: 'BHEL', name: 'Bharat Heavy Electricals Ltd.', sector: 'Defense & Industrials', exchange: 'NSE/BSE' },
-  { symbol: 'SIEMENS', name: 'Siemens Ltd.', sector: 'Defense & Industrials', exchange: 'NSE/BSE' },
-  { symbol: 'ABB', name: 'ABB India Ltd.', sector: 'Defense & Industrials', exchange: 'NSE/BSE' },
-  { symbol: 'HAVELLS', name: 'Havells India Ltd.', sector: 'Defense & Industrials', exchange: 'NSE/BSE' },
-  { symbol: 'POLYCAB', name: 'Polycab India Ltd.', sector: 'Defense & Industrials', exchange: 'NSE/BSE' },
-
-  // Metals, Mining, Telecom & Infra
-  { symbol: 'BHARTIARTL', name: 'Bharti Airtel Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'TATASTEEL', name: 'Tata Steel Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'JSWSTEEL', name: 'JSW Steel Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'HINDALCO', name: 'Hindalco Industries Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'JINDALSTEL', name: 'Jindal Steel & Power Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'LT', name: 'Larsen & Toubro Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'ADANIPORTS', name: 'Adani Ports & SEZ Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'GRASIM', name: 'Grasim Industries Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'ULTRACEMCO', name: 'UltraTech Cement Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' },
-  { symbol: 'AMBUJACEM', name: 'Ambuja Cements Ltd.', sector: 'Metals & Infra', exchange: 'NSE/BSE' }
-];
+// Complete Master Directory of 200+ Verified NSE & BSE Equities
+const REAL_NSE_BSE_STOCKS = nifty500Data.map((item: any) => ({
+  symbol: item.symbol,
+  name: item.name,
+  sector: item.sector,
+  exchange: 'NSE/BSE'
+}));
 
 export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: StockAnalysisViewProps) => {
   const { initialSymbol = 'TCS' } = props;
@@ -176,7 +91,7 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
           <div>
             <div className="flex items-center gap-2 text-xs text-red-600 font-extrabold uppercase tracking-wider mb-1">
               <Building2 className="w-4 h-4 text-red-600" />
-              <span>REAL NSE & BSE EQUITIES DIRECTORY ({REAL_NSE_BSE_STOCKS.length}+ STOCKS)</span>
+              <span>REAL NSE & BSE EQUITIES MASTER DIRECTORY ({REAL_NSE_BSE_STOCKS.length}+ STOCKS)</span>
             </div>
             <h2 className="text-xl font-black text-slate-900">
               Select Any Indian Stock for Deep Audit
@@ -204,7 +119,7 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search ANY NSE/BSE stock symbol (e.g. State Bank of India, TCS, RELIANCE, ADANIENT, TATAPOWER)..."
+              placeholder="Search ANY NSE/BSE stock symbol (e.g. SBIN, TCS, RELIANCE, ADANIENT, IRFC, PAYTM, SUZLON)..."
               className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 font-bold"
             />
           </div>
@@ -237,7 +152,7 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
             </div>
 
             {/* Stocks Directory Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-72 overflow-y-auto p-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-80 overflow-y-auto p-1">
               {filteredStocks.map((st) => {
                 const isSelected = symbol === st.symbol;
                 return (
