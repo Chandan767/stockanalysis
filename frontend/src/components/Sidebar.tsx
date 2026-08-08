@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { 
-  Bot, 
-  Zap, 
+  BarChart3, 
   TrendingUp, 
   Target, 
-  Search,
+  Search, 
+  Zap,
   ArrowRight,
   ArrowLeft
 } from 'lucide-react';
@@ -19,34 +19,34 @@ export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
 
   const agentCards = [
     {
-      id: 'dashboard',
-      number: 'AGENT 01',
-      title: 'Daily Direction Agent',
-      badge: '08:30 IST ML',
-      badgeColor: 'bg-red-100 text-red-700 border-red-200',
-      description: 'Supervised ML direction pipeline (UP / DOWN / NEUTRAL)',
-      icon: Bot,
-      accentColor: 'text-red-600',
-      iconBg: 'bg-red-600'
-    },
-    {
       id: 'today',
-      number: 'AGENT 02',
-      title: 'Intraday Momentum Agent',
-      badge: 'Volume Surge',
-      badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-      description: 'Intraday technicals, volume spikes & breakout setups',
+      number: 'AGENT 01',
+      title: "Today's Opportunity Agent",
+      badge: 'Intraday Scanner',
+      badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      description: 'Scans NSE equities for high-momentum intraday setups',
       icon: TrendingUp,
       accentColor: 'text-emerald-600',
       iconBg: 'bg-emerald-600'
     },
     {
       id: 'longterm',
+      number: 'AGENT 02',
+      title: 'Long-Term Quality Agent',
+      badge: '5-Year Compounder',
+      badgeColor: 'bg-blue-100 text-blue-800 border-blue-200',
+      description: 'Filters ROE > 20%, low debt, and free cash flow compounders',
+      icon: BarChart3,
+      accentColor: 'text-blue-600',
+      iconBg: 'bg-blue-600'
+    },
+    {
+      id: 'backtest',
       number: 'AGENT 03',
-      title: '5Y Growth & Value Agent',
-      badge: '5Y CAGR Audit',
-      badgeColor: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-      description: '5-year historical CAGR, ROE quality & debt trends',
+      title: 'Backtest Strategy Agent',
+      badge: 'Quantitative Engine',
+      badgeColor: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+      description: 'Simulates win-rates, Sharpe ratios, and drawdown curves',
       icon: Target,
       accentColor: 'text-indigo-600',
       iconBg: 'bg-indigo-600'
@@ -71,7 +71,7 @@ export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
   const Icon = activeAgent.icon;
 
   return (
-    <aside className="w-72 border-r border-slate-200 bg-white flex flex-col h-screen sticky top-0 shadow-sm shrink-0">
+    <aside className="w-72 border-r border-slate-200 bg-white flex flex-col h-screen sticky top-0 shadow-sm shrink-0 select-none">
       {/* Brand Header */}
       <div className="h-16 flex items-center space-x-3 px-5 border-b border-slate-200">
         <div className="p-2 bg-red-600 rounded-lg text-white shadow-md shadow-red-600/30">
@@ -87,7 +87,7 @@ export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
       <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto">
         <div className="px-1 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
             Active Agent Pipeline
           </span>
           <span className="text-[9px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-extrabold uppercase">
@@ -122,11 +122,11 @@ export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
             </div>
           </div>
 
-          {/* Running Status Badge */}
-          <div className="mt-4 pt-3 border-t border-red-200 flex items-center justify-between text-xs font-extrabold text-red-600">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-              • Agent Running
+          {/* Clean Running Status Badge */}
+          <div className="mt-4 pt-3 border-t border-red-200 flex items-center justify-between text-xs font-black text-red-600">
+            <span className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span>Agent Active</span>
             </span>
             <ArrowRight className="w-4 h-4 text-red-600" />
           </div>
