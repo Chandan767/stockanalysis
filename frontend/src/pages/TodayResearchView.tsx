@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { TrendingUp, Activity, Filter, ArrowUpRight, AlertCircle } from 'lucide-react';
 import { fetchTodayResearch } from '../services/api';
@@ -7,7 +8,9 @@ interface TodayResearchViewProps {
   onSelectStock: (symbol: string) => void;
 }
 
-export const TodayResearchView = ({ onSelectStock }: TodayResearchViewProps) => {
+export const TodayResearchView: React.FC<TodayResearchViewProps> = (props: TodayResearchViewProps) => {
+  const { onSelectStock } = props;
+
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,8 +34,8 @@ export const TodayResearchView = ({ onSelectStock }: TodayResearchViewProps) => 
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 text-slate-400 text-sm space-x-2">
-        <Activity className="w-5 h-5 animate-spin text-indigo-500" />
+      <div className="flex items-center justify-center h-64 text-slate-700 font-bold text-sm space-x-2">
+        <Activity className="w-5 h-5 animate-spin text-red-600" />
         <span>Scanning intraday technical setups & volume surges...</span>
       </div>
     );
@@ -40,11 +43,11 @@ export const TodayResearchView = ({ onSelectStock }: TodayResearchViewProps) => 
 
   if (error) {
     return (
-      <div className="p-8 rounded-2xl bg-rose-950/20 border border-rose-800/40 text-center space-y-3">
-        <p className="text-sm font-semibold text-rose-400">{error}</p>
+      <div className="p-8 rounded-2xl bg-red-50 border border-red-200 text-center space-y-3">
+        <p className="text-sm font-semibold text-red-600">{error}</p>
         <button
           onClick={() => loadTodayData()}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs rounded-xl transition-all"
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-red-600/30"
         >
           Retry Market Scan
         </button>
@@ -58,134 +61,118 @@ export const TodayResearchView = ({ onSelectStock }: TodayResearchViewProps) => 
   ];
 
   let filteredList = allCandidates;
-  if (filter === 'bullish') filteredList = allCandidates.filter(c => c.bias === 'Bullish');
-  if (filter === 'bearish') filteredList = allCandidates.filter(c => c.bias === 'Bearish');
-  if (filter === 'breakouts') filteredList = allCandidates.filter(c => c.breakout_candidate);
-  if (filter === 'volume') filteredList = allCandidates.filter(c => c.unusual_volume);
+  if (filter === 'bullish') filteredList = allCandidates.filter((s) => s.bias === 'Bullish');
+  if (filter === 'bearish') filteredList = allCandidates.filter((s) => s.bias === 'Bearish');
+  if (filter === 'breakouts') filteredList = allCandidates.filter((s) => s.breakout_candidate);
+  if (filter === 'volume') filteredList = allCandidates.filter((s) => s.unusual_volume);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <div className="flex items-center space-x-2 text-xs text-indigo-400 font-semibold uppercase tracking-wider mb-1">
-            <TrendingUp className="w-4 h-4" />
-            <span>Research Mode • Today's Market</span>
-          </div>
-          <h1 className="text-2xl font-bold text-slate-100">Today's Market Research Engine</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Probability-style Opportunity Scores based on technical setup, momentum, volume surges, sector strength, and news sentiment.
+          <h2 className="text-xl font-black text-slate-900 flex items-center space-x-2">
+            <TrendingUp className="w-5 h-5 text-red-600" />
+            <span>Today's Market Opportunity Scanner</span>
+          </h2>
+          <p className="text-xs text-slate-500 font-medium mt-1">
+            Quantitative scoring evaluating intraday momentum, volume surges, breakout patterns, and sector tailwinds.
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 bg-amber-500/10 border border-amber-500/20 text-amber-300 px-4 py-2 rounded-xl text-xs">
-          <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>Analytical probability scores — not guaranteed financial returns.</span>
+        {/* Filter Toolbar */}
+        <div className="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+          <Filter className="w-4 h-4 text-slate-500 ml-2" />
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              filter === 'all' ? 'bg-red-600 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            All Setups ({allCandidates.length})
+          </button>
+          <button
+            onClick={() => setFilter('bullish')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              filter === 'bullish' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            Bullish
+          </button>
+          <button
+            onClick={() => setFilter('bearish')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              filter === 'bearish' ? 'bg-red-600 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            Bearish
+          </button>
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center space-x-2 overflow-x-auto pb-2">
-        <span className="text-xs text-slate-500 font-medium mr-2 flex items-center">
-          <Filter className="w-3.5 h-3.5 mr-1" /> Filter:
-        </span>
-        {[
-          { id: 'all', label: 'All Candidates' },
-          { id: 'bullish', label: 'Bullish Setups' },
-          { id: 'bearish', label: 'Bearish Setups' },
-          { id: 'breakouts', label: 'Breakout Candidates' },
-          { id: 'volume', label: 'Unusual Volume' },
-        ].map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setFilter(tab.id as any)}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              filter === tab.id
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {/* Grid of Opportunity Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredList.map((item: TodayScoreResult) => {
+          const isBullish = item.bias === 'Bullish';
+          return (
+            <div
+              key={item.symbol}
+              onClick={() => onSelectStock(item.symbol)}
+              className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-red-500 hover:shadow-md transition-all cursor-pointer space-y-4 group"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg group-hover:text-red-600 transition-colors flex items-center space-x-1.5">
+                    <span>{item.symbol}</span>
+                    <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-red-600" />
+                  </h3>
+                  <span className="text-xs font-bold text-slate-500">{item.bias} Bias</span>
+                </div>
 
-      {/* Candidates List Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredList.map((item) => (
-          <div 
-            key={item.symbol}
-            onClick={() => onSelectStock(item.symbol)}
-            className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer space-y-4 group"
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-bold text-slate-100 group-hover:text-indigo-400 transition-colors flex items-center space-x-2">
-                  <span>{item.symbol}</span>
-                  <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-indigo-400" />
-                </h3>
-                <div className="flex items-center space-x-2 mt-1">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                    item.bias === 'Bullish' 
-                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                      : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                  }`}>
-                    Bias: {item.bias}
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-500 font-bold block">Opportunity Score</span>
+                  <span
+                    className={`text-xl font-black font-mono ${
+                      isBullish ? 'text-emerald-600' : 'text-red-600'
+                    }`}
+                  >
+                    {item.today_opportunity_score}/100
                   </span>
-                  <span className="text-[10px] text-slate-500 font-mono">Confidence: {item.confidence}</span>
                 </div>
               </div>
 
-              <div className="text-right">
-                <span className="text-xs text-slate-400 block font-medium">Today's Score</span>
-                <span className="text-2xl font-bold font-mono text-indigo-400">{item.today_opportunity_score}/100</span>
+              {/* Score Breakdown Bar */}
+              <div className="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs font-semibold">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Technical Score</span>
+                  <span className="font-bold text-slate-900">{item.technical_score}/100</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Momentum Score</span>
+                  <span className="font-bold text-slate-900">{item.momentum_score}/100</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Volume Score</span>
+                  <span className="font-bold text-slate-900">{item.volume_score}/100</span>
+                </div>
+              </div>
+
+              {/* Flags */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {item.breakout_candidate && (
+                  <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                    Breakout Setup
+                  </span>
+                )}
+                {item.unusual_volume && (
+                  <span className="px-2.5 py-1 rounded-md bg-red-50 text-red-700 border border-red-200 text-[10px] font-bold">
+                    Unusual Volume Surge
+                  </span>
+                )}
               </div>
             </div>
-
-            {/* Score Breakdown Bars */}
-            <div className="grid grid-cols-2 gap-3 text-xs pt-2">
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900">
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
-                  <span>Technical (30%)</span>
-                  <span className="font-mono text-slate-200">{item.technical_score}</span>
-                </div>
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${item.technical_score}%` }} />
-                </div>
-              </div>
-
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900">
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
-                  <span>Momentum (20%)</span>
-                  <span className="font-mono text-slate-200">{item.momentum_score}</span>
-                </div>
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${item.momentum_score}%` }} />
-                </div>
-              </div>
-
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900">
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
-                  <span>Volume (15%)</span>
-                  <span className="font-mono text-slate-200">{item.volume_score}</span>
-                </div>
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-amber-500 h-full rounded-full" style={{ width: `${item.volume_score}%` }} />
-                </div>
-              </div>
-
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900">
-                <div className="flex justify-between text-[11px] text-slate-400 mb-1">
-                  <span>Sector (10%)</span>
-                  <span className="font-mono text-slate-200">{item.sector_score}</span>
-                </div>
-                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-purple-500 h-full rounded-full" style={{ width: `${item.sector_score}%` }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
