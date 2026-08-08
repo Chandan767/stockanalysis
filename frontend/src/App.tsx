@@ -53,6 +53,7 @@ export const App: React.FC = () => {
               <DashboardView
                 onSelectStock={handleSelectStock}
                 onOpenAgentModal={handleOpenAgentModal}
+                onLaunchAgentTab={(tab: string) => setActiveTab(tab)}
               />
             )}
             {activeTab === 'today' && <TodayResearchView onSelectStock={handleSelectStock} />}

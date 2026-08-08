@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
+  Bot,
   TrendingUp,
   TrendingDown,
   Activity,
@@ -11,7 +12,11 @@ import {
   CheckCircle2,
   AlertTriangle,
   RotateCw,
-  Award
+  Award,
+  Target,
+  Search,
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 import {
   DailyMarketPredictionReport,
@@ -28,16 +33,18 @@ import {
 interface DashboardViewProps {
   onSelectStock: (symbol: string) => void;
   onOpenAgentModal: () => void;
+  onLaunchAgentTab?: (tab: string) => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardViewProps) => {
-  const { onSelectStock, onOpenAgentModal } = props;
+  const { onSelectStock, onOpenAgentModal, onLaunchAgentTab } = props;
 
   const [predictions, setPredictions] = useState<DailyMarketPredictionReport | null>(null);
   const [globals, setGlobals] = useState<GlobalMarketReport | null>(null);
   const [selectedBacktestSymbol, setSelectedBacktestSymbol] = useState<string>('INFY');
   const [backtestData, setBacktestData] = useState<BacktestSummaryReport | null>(null);
   const [activeTab, setActiveTab] = useState<'gainers' | 'losers' | 'uncertain'>('gainers');
+  const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [backtestLoading, setBacktestLoading] = useState<boolean>(false);
@@ -90,10 +97,10 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
-        <p className="text-slate-700 font-bold animate-pulse text-sm">
-          Scanning 30+ Equities & overnight Global Markets (08:30 IST Engine)...
+      <div className="flex flex-col items-center justify-center min-h-[65vh] gap-4">
+        <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-red-600"></div>
+        <p className="text-slate-900 font-extrabold animate-pulse text-base">
+          Initializing 4 Autonomous AI Agent Engines & Overnight Global Markets...
         </p>
       </div>
     );
@@ -101,49 +108,38 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
 
   if (error || !predictions) {
     return (
-      <div className="p-8 text-center bg-red-50 border border-red-200 rounded-xl my-6">
+      <div className="p-8 text-center bg-red-50 border border-red-200 rounded-2xl my-6">
         <AlertTriangle className="w-12 h-12 text-red-600 mx-auto mb-3" />
-        <h3 className="text-xl font-bold text-slate-900">Daily Prediction Engine Error</h3>
+        <h3 className="text-xl font-bold text-slate-900">AI Agent Pipeline Error</h3>
         <p className="text-slate-600 text-sm mt-1 mb-4">{error}</p>
         <button
           onClick={loadData}
-          className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg text-sm transition shadow-md shadow-red-600/30"
+          className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-red-600/30"
         >
-          Retry Prediction Scan
+          Retry Agent Pipeline Scan
         </button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* 1. TOP HERO HEADER & ENGINE STATUS */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-red-50/50 to-slate-50 border border-red-200 p-6 md:p-8 shadow-md">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+    <div className="space-y-8">
+      {/* 1. HERO HEADER: FOUR AUTONOMOUS AI AGENTS COMMAND CENTER */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-100">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <span className="px-3 py-1 bg-red-50 border border-red-200 text-red-600 font-bold text-xs rounded-full flex items-center gap-1.5 uppercase tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
-                Live 08:30 AM IST Prediction Cutoff
-              </span>
-              <span className="text-slate-500 text-xs flex items-center gap-1 font-medium">
-                <Clock className="w-3.5 h-3.5 text-red-600" />
-                {predictions.prediction_timestamp}
-              </span>
+            <div className="flex items-center gap-2 text-xs text-red-600 font-extrabold uppercase tracking-wider mb-2">
+              <Sparkles className="w-4 h-4 text-red-600" />
+              <span>STOCK ANALYSER • 4 SPECIALIZED AI AGENTS HUB</span>
             </div>
             <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-              Daily Stock Direction Prediction Engine
+              Autonomous AI Agent Command Center
             </h1>
-            <p className="text-slate-600 text-sm mt-2 max-w-2xl leading-relaxed font-medium">
-              Automated pre-market machine-learning model classifying expected return direction
-              (<span className="text-emerald-600 font-bold">UP</span> /{' '}
-              <span className="text-red-600 font-bold">DOWN</span> /{' '}
-              <span className="text-amber-600 font-bold">NEUTRAL</span>) across 30+ Indian equities with calibrated probability scaling.
+            <p className="text-slate-600 text-sm mt-2 max-w-3xl leading-relaxed font-medium">
+              Click any of the 4 Autonomous AI Agents below to execute its specialized machine learning, news NLP, technical volume surge, or 5-year historical CAGR audit pipeline.
             </p>
           </div>
 
-          {/* RIGHT ACTION BUTTONS */}
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={onOpenAgentModal}
@@ -154,54 +150,137 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
             </button>
             <button
               onClick={loadData}
-              className="p-3 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200 shadow-sm transition"
-              title="Refresh Engine Scan"
+              className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200 transition"
+              title="Refresh All Agent Pipelines"
             >
               <RotateCw className="w-4 h-4 text-red-600" />
             </button>
           </div>
         </div>
 
-        {/* METRICS ROW */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-200">
-          <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
-            <div className="text-slate-500 text-xs font-semibold">Global Market Regime</div>
-            <div className="text-slate-900 font-bold text-base mt-1 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-red-600" />
-              {predictions.market_regime}
+        {/* 2. THE 4 AUTONOMOUS AI AGENT CARDS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+          {/* AGENT 1: DAILY DIRECTION AGENT */}
+          <div
+            onClick={() => setSelectedAgent('daily')}
+            className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between group ${
+              selectedAgent === 'daily' || selectedAgent === null
+                ? 'bg-red-50/50 border-red-600 shadow-md ring-1 ring-red-600'
+                : 'bg-slate-50 border-slate-200 hover:border-red-400 hover:bg-white'
+            }`}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-3 bg-red-600 rounded-xl text-white shadow-md shadow-red-600/30">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-[10px] font-extrabold px-2.5 py-1 bg-red-100 text-red-700 rounded-full border border-red-200 uppercase tracking-wider">
+                  08:30 IST ML
+                </span>
+              </div>
+              <h3 className="font-black text-slate-900 text-lg group-hover:text-red-600 transition-colors">
+                1. Daily Direction Agent
+              </h3>
+              <p className="text-xs text-slate-600 font-medium mt-1.5 leading-relaxed">
+                Executes pre-market supervised ML direction classification (<span className="text-emerald-600 font-bold">UP</span>/<span className="text-red-600 font-bold">DOWN</span>/<span className="text-amber-600 font-bold">NEUTRAL</span>) across 30+ equities with global macro cues.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-red-600 group-hover:text-red-700">
+              <span>Inspect Daily Predictions</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
-          <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
-            <div className="text-slate-500 text-xs font-semibold">Overnight Sentiment</div>
-            <div className="text-emerald-600 font-bold text-base mt-1 flex items-center gap-1.5">
-              <TrendingUp className="w-4 h-4" />
-              {predictions.global_sentiment}
+
+          {/* AGENT 2: INTRADAY MOMENTUM AGENT */}
+          <div
+            onClick={() => onLaunchAgentTab ? onLaunchAgentTab('today') : null}
+            className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-red-500 hover:bg-white transition-all cursor-pointer flex flex-col justify-between group"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-3 bg-emerald-600 rounded-xl text-white shadow-md shadow-emerald-600/30">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-[10px] font-extrabold px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200 uppercase tracking-wider">
+                  Volume Surge
+                </span>
+              </div>
+              <h3 className="font-black text-slate-900 text-lg group-hover:text-emerald-600 transition-colors">
+                2. Intraday Momentum Agent
+              </h3>
+              <p className="text-xs text-slate-600 font-medium mt-1.5 leading-relaxed">
+                Scans intraday technical setups, unusual volume spikes, RSI momentum leaders, and breakout candidates.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-emerald-600 group-hover:text-emerald-700">
+              <span>Launch Intraday Agent</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
-          <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
-            <div className="text-slate-500 text-xs font-semibold">Total Equities Audited</div>
-            <div className="text-slate-900 font-bold text-base mt-1 flex items-center gap-1.5">
-              <BarChart3 className="w-4 h-4 text-red-600" />
-              {predictions.total_stocks_evaluated} Companies
+
+          {/* AGENT 3: 5Y GROWTH & VALUE AGENT */}
+          <div
+            onClick={() => onLaunchAgentTab ? onLaunchAgentTab('longterm') : null}
+            className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-red-500 hover:bg-white transition-all cursor-pointer flex flex-col justify-between group"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-3 bg-indigo-600 rounded-xl text-white shadow-md shadow-indigo-600/30">
+                  <Target className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-[10px] font-extrabold px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full border border-indigo-200 uppercase tracking-wider">
+                  5Y CAGR Audit
+                </span>
+              </div>
+              <h3 className="font-black text-slate-900 text-lg group-hover:text-indigo-600 transition-colors">
+                3. 5Y Growth & Value Agent
+              </h3>
+              <p className="text-xs text-slate-600 font-medium mt-1.5 leading-relaxed">
+                Audits 5-year historical price channels, revenue/profit CAGR, ROE/ROCE profitability, and balance sheet quality.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-indigo-600 group-hover:text-indigo-700">
+              <span>Launch 5Y Growth Agent</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
-          <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
-            <div className="text-slate-500 text-xs font-semibold">Model Baseline</div>
-            <div className="text-red-600 font-bold text-base mt-1 flex items-center gap-1.5">
-              <Award className="w-4 h-4 text-red-600" />
-              v1.0 Baseline ML
+
+          {/* AGENT 4: DEEP EQUITY AUDIT AGENT */}
+          <div
+            onClick={() => onLaunchAgentTab ? onLaunchAgentTab('stock') : null}
+            className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-red-500 hover:bg-white transition-all cursor-pointer flex flex-col justify-between group"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-3 bg-violet-600 rounded-xl text-white shadow-md shadow-violet-600/30">
+                  <Search className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-[10px] font-extrabold px-2.5 py-1 bg-violet-100 text-violet-700 rounded-full border border-violet-200 uppercase tracking-wider">
+                  360° Stock NLP
+                </span>
+              </div>
+              <h3 className="font-black text-slate-900 text-lg group-hover:text-violet-600 transition-colors">
+                4. Deep Equity Audit Agent
+              </h3>
+              <p className="text-xs text-slate-600 font-medium mt-1.5 leading-relaxed">
+                Performs multi-dimensional stock report synthesis: live quotes, technical indicators, financial ratios, and news NLP.
+              </p>
+            </div>
+            <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-violet-600 group-hover:text-violet-700">
+              <span>Launch Deep Audit Agent</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2. GLOBAL OVERNIGHT MARKETS & INTER-MARKET MACRO WIDGET */}
+      {/* 3. GLOBAL OVERNIGHT MARKETS & INTER-MARKET MACRO WIDGET */}
       {globals && globals.signals && (
         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Globe className="w-5 h-5 text-red-600" />
-              Global Overnight Inter-Market & Macro Cues
+              Global Overnight Inter-Market & Macro Signals (Daily Direction Agent)
             </h2>
             <span className="text-xs font-semibold text-slate-500">Updates live from US, EU & Asia</span>
           </div>
@@ -282,13 +361,13 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
         </div>
       )}
 
-      {/* 3. CATEGORIZED PREDICTION SECTIONS (GAINERS / LOSERS / UNCERTAIN) */}
+      {/* 4. CATEGORIZED PREDICTION RESULTS (DAILY DIRECTION AGENT) */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-red-600" />
-              Direction Predictions for Today's Session
+              <Bot className="w-5 h-5 text-red-600" />
+              Daily Direction Agent Results (Today's Session)
             </h2>
             <p className="text-slate-500 text-xs mt-1 font-medium">
               Select stock card to inspect walk-forward backtest accuracy and detailed feature breakdown.
@@ -367,7 +446,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
         )}
       </div>
 
-      {/* 4. INTERACTIVE MODEL BACKTESTING & ACCURACY DASHBOARD */}
+      {/* 5. INTERACTIVE MODEL BACKTESTING & ACCURACY DASHBOARD */}
       {selectedBacktestSymbol && (
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
@@ -555,7 +634,7 @@ const PredictionStockGrid: React.FC<PredictionStockGridProps> = (props: Predicti
                 <div>
                   <h4 className="font-black text-slate-900 text-base flex items-center gap-2">
                     {stock.symbol}
-                    <span className="text-xs font-semibold text-slate-500">({stock.sector})</span>
+                    <span className="text-xs font-normal text-slate-500">({stock.sector})</span>
                   </h4>
                   <p className="text-xs font-semibold text-slate-600 truncate max-w-[180px]">{stock.name}</p>
                 </div>
