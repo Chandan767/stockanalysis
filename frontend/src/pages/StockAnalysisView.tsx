@@ -21,11 +21,18 @@ interface StockAnalysisViewProps {
   initialSymbol?: string;
 }
 
-// Complete Master Directory of 200+ Verified NSE & BSE Equities
-const REAL_NSE_BSE_STOCKS = nifty500Data.map((item: any) => ({
+interface StockItem {
+  symbol: string;
+  name: string;
+  sector: string;
+  exchange: string;
+}
+
+// Complete Master Directory of 2,075+ Verified NSE & BSE Listed Companies
+const REAL_NSE_BSE_STOCKS: StockItem[] = (nifty500Data as any[]).map((item: any) => ({
   symbol: item.symbol,
   name: item.name,
-  sector: item.sector,
+  sector: item.sector || 'NSE & BSE Equities',
   exchange: 'NSE/BSE'
 }));
 
@@ -72,7 +79,7 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
   };
 
   // Filter stocks by sector and search query
-  const filteredStocks = REAL_NSE_BSE_STOCKS.filter((st) => {
+  const filteredStocks = REAL_NSE_BSE_STOCKS.filter((st: StockItem) => {
     const matchesSector = selectedSector === 'ALL' || st.sector === selectedSector;
     const matchesQuery =
       st.symbol.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -81,7 +88,7 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
     return matchesSector && matchesQuery;
   });
 
-  const sectors = ['ALL', 'Banking & Finance', 'Information Tech', 'Energy & Power', 'Automotive', 'Pharma & Healthcare', 'Consumer & Retail', 'Defense & Industrials', 'Metals & Infra'];
+  const sectors = ['ALL', 'Banking & Finance', 'Information Tech', 'Energy & Power', 'Automotive', 'Pharma & Healthcare', 'Consumer & Retail', 'Defense & Industrials', 'Metals & Infra', 'NSE & BSE Equities'];
 
   return (
     <div className="space-y-8">
@@ -91,13 +98,13 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
           <div>
             <div className="flex items-center gap-2 text-xs text-red-600 font-extrabold uppercase tracking-wider mb-1">
               <Building2 className="w-4 h-4 text-red-600" />
-              <span>REAL NSE & BSE EQUITIES MASTER DIRECTORY ({REAL_NSE_BSE_STOCKS.length}+ STOCKS)</span>
+              <span>COMPLETE NSE & BSE EQUITIES MASTER DIRECTORY ({REAL_NSE_BSE_STOCKS.length.toLocaleString('en-IN')}+ COMPANIES)</span>
             </div>
             <h2 className="text-xl font-black text-slate-900">
               Select Any Indian Stock for Deep Audit
             </h2>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
-              Click any company below or type any ticker symbol to trigger Agent 04's live multi-dimensional analysis pipeline.
+              Click any company from the 2,075+ registered equities below or search any symbol to trigger Agent 04's live audit pipeline.
             </p>
           </div>
 
@@ -119,7 +126,7 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search ANY NSE/BSE stock symbol (e.g. SBIN, TCS, RELIANCE, ADANIENT, IRFC, PAYTM, SUZLON)..."
+              placeholder="Search ANY of the 2,075+ NSE & BSE stocks (e.g. SBIN, TCS, RELIANCE, ADANIENT, IRFC, PAYTM, SUZLON, TATAPOWER)..."
               className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 font-bold"
             />
           </div>
@@ -146,14 +153,14 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
                       : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200'
                   }`}
                 >
-                  {sec === 'ALL' ? `All Equities (${REAL_NSE_BSE_STOCKS.length})` : sec}
+                  {sec === 'ALL' ? `All Companies (${REAL_NSE_BSE_STOCKS.length.toLocaleString('en-IN')})` : sec}
                 </button>
               ))}
             </div>
 
             {/* Stocks Directory Cards Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-80 overflow-y-auto p-1">
-              {filteredStocks.map((st) => {
+              {filteredStocks.slice(0, 150).map((st: StockItem) => {
                 const isSelected = symbol === st.symbol;
                 return (
                   <div
@@ -185,6 +192,11 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
                 );
               })}
             </div>
+            {filteredStocks.length > 150 && (
+              <p className="text-[11px] text-slate-500 font-medium text-center italic">
+                Showing top 150 results matching filter. Type in the search box to pinpoint any of the {filteredStocks.length.toLocaleString('en-IN')} equities.
+              </p>
+            )}
           </div>
         )}
       </div>
