@@ -1,10 +1,27 @@
 import * as React from 'react';
-import { Search, Bell, Activity } from 'lucide-react';
+import { Search, Bell, Activity, ArrowLeft, Bot } from 'lucide-react';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onBackToHub?: () => void;
+  showBackHub?: boolean;
+}
+
+export const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
+  const { onBackToHub, showBackHub } = props;
+
   return (
     <header className="h-16 border-b border-slate-200 bg-white/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-      <div className="flex items-center space-x-4 flex-1 max-w-xl">
+      <div className="flex items-center space-x-4 flex-1 max-w-2xl">
+        {showBackHub && onBackToHub && (
+          <button
+            onClick={onBackToHub}
+            className="px-3.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-sm shrink-0"
+          >
+            <ArrowLeft className="w-4 h-4 text-red-600" />
+            <span>4 AI Agents Hub</span>
+          </button>
+        )}
+
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-600" />
           <input
