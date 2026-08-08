@@ -20,6 +20,9 @@ export const App: React.FC = () => {
   const [agentReport, setAgentReport] = useState<AgentAnalysisReport | null>(null);
   const [agentLoading, setAgentLoading] = useState<boolean>(false);
 
+  // Mobile drawer state
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
+
   const handleSelectStock = (symbol: string) => {
     setSelectedStock(symbol);
     setActiveTab('stock');
@@ -60,6 +63,8 @@ export const App: React.FC = () => {
           <Sidebar
             activeTab={activeTab}
             setActiveTab={(tab: string) => setActiveTab(tab)}
+            isOpenMobile={mobileSidebarOpen}
+            onCloseMobile={() => setMobileSidebarOpen(false)}
           />
 
           {/* Main Content Area */}
@@ -67,9 +72,10 @@ export const App: React.FC = () => {
             <Header
               showBackHub={true}
               onBackToHub={() => setActiveTab('hub')}
+              onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
             />
 
-            <main className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+            <main className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 bg-slate-50/50">
               <div className="max-w-7xl mx-auto">
                 {activeTab === 'dashboard' && (
                   <DashboardView
@@ -97,10 +103,9 @@ export const App: React.FC = () => {
       <AgentAnalysisModal
         isOpen={agentModalOpen}
         onClose={() => setAgentModalOpen(false)}
+        onSelectStock={handleSelectStock}
         report={agentReport}
         loading={agentLoading}
-        onSelectStock={handleSelectStock}
-        onRetry={loadAgentReport}
       />
     </div>
   );

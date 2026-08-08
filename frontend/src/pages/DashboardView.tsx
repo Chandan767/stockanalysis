@@ -177,7 +177,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
     return (
       <div className="flex flex-col items-center justify-center min-h-[65vh] gap-4">
         <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-red-600"></div>
-        <p className="text-slate-900 font-extrabold text-base">
+        <p className="text-slate-900 font-extrabold text-base text-center px-4">
           Agent 01 Crawling Live US Markets & News NLP Across 2,075+ NSE & BSE Equities...
         </p>
       </div>
@@ -201,19 +201,19 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
   }
 
   return (
-    <div className="space-y-8 select-none">
+    <div className="space-y-6 sm:space-y-8 select-none">
       {/* 1. AGENT 01 FOCUSED HEADER */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 text-xs text-red-600 font-extrabold uppercase tracking-wider mb-2">
               <Bot className="w-4 h-4 text-red-600" />
               <span>AGENT 01 • DAILY DIRECTION PREDICTION ENGINE</span>
             </div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               Pre-Market Profit & Loss Direction Predictions
             </h1>
-            <p className="text-slate-600 text-sm mt-1.5 max-w-3xl leading-relaxed font-medium">
+            <p className="text-slate-600 text-xs sm:text-sm mt-1.5 max-w-3xl leading-relaxed font-medium">
               Supervised Machine Learning evaluation across all <strong>2,075+ NSE & BSE registered equities</strong> for {predictions.prediction_date}. Evaluates overnight US market cues (S&P 500, Nasdaq), Brent crude, USD/INR, real-time news NLP, and technical momentum.
             </p>
           </div>
@@ -221,7 +221,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={onOpenAgentModal}
-              className="px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-red-600/30 hover:shadow-red-600/50 transition flex items-center gap-2"
+              className="w-full sm:w-auto px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-red-600/30 hover:shadow-red-600/50 transition flex items-center justify-center gap-2"
             >
               <Zap className="w-4 h-4 text-white fill-white" />
               Run Web Reasoning Agent
@@ -236,11 +236,11 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
           </div>
         </div>
 
-        {/* 2. OVERALL PROFIT vs LOSS SUMMARY CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+        {/* 2. OVERALL PROFIT vs LOSS SUMMARY CARDS - RESPONSIVE FOR ALL BREAKPOINTS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-4 mt-6">
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200">
             <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block">Total Equities Evaluated</span>
-            <span className="text-2xl font-black font-mono text-slate-900 mt-1 block">
+            <span className="text-xl sm:text-2xl font-black font-mono text-slate-900 mt-1 block">
               {allStockPredictions.length.toLocaleString('en-IN')} Stocks
             </span>
             <span className="text-[11px] text-slate-500 font-bold mt-1 block">Official NSE/BSE Master List</span>
@@ -248,7 +248,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
 
           <div
             onClick={() => setFilterDirection('PROFIT')}
-            className={`p-5 rounded-2xl border transition cursor-pointer ${
+            className={`p-4 sm:p-5 rounded-2xl border transition cursor-pointer ${
               filterDirection === 'PROFIT'
                 ? 'bg-emerald-100/80 border-emerald-600 ring-2 ring-emerald-600'
                 : 'bg-emerald-50/80 border-emerald-200 hover:border-emerald-400'
@@ -258,7 +258,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
               <span className="text-[10px] font-black text-emerald-800 uppercase tracking-wider">Predicted in Profit</span>
               <TrendingUp className="w-4 h-4 text-emerald-600" />
             </div>
-            <span className="text-2xl font-black font-mono text-emerald-700 mt-1 block">
+            <span className="text-xl sm:text-2xl font-black font-mono text-emerald-700 mt-1 block">
               {profitCount.toLocaleString('en-IN')} Stocks
             </span>
             <span className="text-[11px] text-emerald-800 font-extrabold mt-1 block">
@@ -268,7 +268,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
 
           <div
             onClick={() => setFilterDirection('LOSS')}
-            className={`p-5 rounded-2xl border transition cursor-pointer ${
+            className={`p-4 sm:p-5 rounded-2xl border transition cursor-pointer ${
               filterDirection === 'LOSS'
                 ? 'bg-red-100/80 border-red-600 ring-2 ring-red-600'
                 : 'bg-red-50/80 border-red-200 hover:border-red-400'
@@ -278,7 +278,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
               <span className="text-[10px] font-black text-red-800 uppercase tracking-wider">Predicted in Loss</span>
               <TrendingDown className="w-4 h-4 text-red-600" />
             </div>
-            <span className="text-2xl font-black font-mono text-red-700 mt-1 block">
+            <span className="text-xl sm:text-2xl font-black font-mono text-red-700 mt-1 block">
               {lossCount.toLocaleString('en-IN')} Stocks
             </span>
             <span className="text-[11px] text-red-800 font-extrabold mt-1 block">
@@ -288,7 +288,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
 
           <div
             onClick={() => setFilterDirection('NEUTRAL')}
-            className={`p-5 rounded-2xl border transition cursor-pointer ${
+            className={`p-4 sm:p-5 rounded-2xl border transition cursor-pointer ${
               filterDirection === 'NEUTRAL'
                 ? 'bg-amber-100/80 border-amber-600 ring-2 ring-amber-600'
                 : 'bg-amber-50/80 border-amber-200 hover:border-amber-400'
@@ -298,7 +298,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
               <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider">Neutral / Rangebound</span>
               <Activity className="w-4 h-4 text-amber-600" />
             </div>
-            <span className="text-2xl font-black font-mono text-amber-700 mt-1 block">
+            <span className="text-xl sm:text-2xl font-black font-mono text-amber-700 mt-1 block">
               {neutralCount.toLocaleString('en-IN')} Stocks
             </span>
             <span className="text-[11px] text-amber-800 font-extrabold mt-1 block">
@@ -310,21 +310,21 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
 
       {/* 3. LIVE US & GLOBAL MARKET NEWS FEED WIDGET WITH EXPAND / COLLAPSE BUTTON */}
       {globals?.live_news_feed && globals.live_news_feed.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <Newspaper className="w-5 h-5 text-red-600" />
+              <Newspaper className="w-5 h-5 text-red-600 shrink-0" />
               <div>
-                <h3 className="text-base font-black text-slate-900">
+                <h3 className="text-sm sm:text-base font-black text-slate-900">
                   Live US & Global Market News Updates
                 </h3>
-                <p className="text-xs text-slate-500 font-medium">
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium hidden sm:block">
                   Real-time Wall Street, Federal Reserve, crude oil, and company headlines driving today's predictions.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <span className="hidden sm:inline-block px-3 py-1 bg-red-50 text-red-600 font-extrabold text-[10px] uppercase rounded-full border border-red-200">
                 Live Stream
               </span>
@@ -342,7 +342,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
 
           {/* Collapsible News Grid */}
           {showNewsFeed && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 pt-1">
               {globals.live_news_feed.map((item, idx) => (
                 <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 flex flex-col justify-between">
                   <div>
@@ -384,10 +384,10 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
       )}
 
       {/* 4. PREDICTION TABLE & SEARCH DIRECTORY FOR ALL STOCKS */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm space-y-5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
-            <h3 className="text-lg font-black text-slate-900">
+            <h3 className="text-base sm:text-lg font-black text-slate-900">
               Daily Stock Direction Master Search ({filteredStocks.length.toLocaleString('en-IN')} Equities)
             </h3>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
@@ -396,7 +396,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
           </div>
 
           {/* Direction Filter Tabs */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl overflow-x-auto max-w-full">
             {[
               { id: 'ALL', label: 'All' },
               { id: 'PROFIT', label: '🟢 Profit (UP)' },
@@ -406,7 +406,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
               <button
                 key={f.id}
                 onClick={() => setFilterDirection(f.id as any)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition whitespace-nowrap ${
                   filterDirection === f.id
                     ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
                     : 'text-slate-600 hover:text-slate-900'
@@ -419,7 +419,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
         </div>
 
         {/* SEARCH INPUT & SECTOR FILTER */}
-        <div className="flex flex-col sm:flex-row items-center gap-3">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
           <div className="relative flex-1 w-full">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-red-600" />
             <input
@@ -427,7 +427,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search ANY stock by name or symbol (e.g. SBIN, TCS, RELIANCE, APEX, TRAVELFOOD, ADANIENT)..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 font-bold select-text"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 font-bold select-text"
             />
           </div>
 
@@ -448,8 +448,8 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
           </div>
         </div>
 
-        {/* PREDICTION RESULTS CARDS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[550px] overflow-y-auto p-1">
+        {/* PREDICTION RESULTS CARDS GRID - RESPONSIVE FOR ALL SCREEN SIZES */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4 max-h-[550px] overflow-y-auto p-1">
           {filteredStocks.slice(0, 120).map((st) => {
             const isProfit = st.predicted_direction === 'UP';
             const isLoss = st.predicted_direction === 'DOWN';

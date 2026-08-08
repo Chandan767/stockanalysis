@@ -6,16 +6,19 @@ import {
   Search, 
   Zap,
   ArrowRight,
-  ArrowLeft
+  ArrowLeft,
+  X
 } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  isOpenMobile?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
-  const { activeTab, setActiveTab } = props;
+  const { activeTab, setActiveTab, isOpenMobile, onCloseMobile } = props;
 
   const agentCards = [
     {
@@ -71,87 +74,115 @@ export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
   const Icon = activeAgent.icon;
 
   return (
-    <aside className="w-72 border-r border-slate-200 bg-white flex flex-col h-screen sticky top-0 shadow-sm shrink-0 select-none">
-      {/* Brand Header */}
-      <div className="h-16 flex items-center space-x-3 px-5 border-b border-slate-200">
-        <div className="p-2 bg-red-600 rounded-lg text-white shadow-md shadow-red-600/30">
-          <Zap className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h1 className="font-black text-sm text-slate-900 tracking-wide uppercase">STOCK ANALYSER</h1>
-          <p className="text-[10px] text-red-600 font-bold tracking-wider">ACTIVE AGENT DESK</p>
-        </div>
-      </div>
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {isOpenMobile && (
+        <div
+          onClick={onCloseMobile}
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+        />
+      )}
 
-      {/* Active Running Agent Card Section */}
-      <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto">
-        <div className="px-1 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            Active Agent Pipeline
-          </span>
-          <span className="text-[9px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-extrabold uppercase">
-            Running
-          </span>
-        </div>
-
-        {/* The Single Active Agent Card */}
-        <div className="p-5 rounded-2xl border bg-red-50/60 border-red-500 shadow-md ring-1 ring-red-500 relative overflow-hidden">
-          {/* Card Top Strip */}
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">
-              {activeAgent.number}
-            </span>
-            <span className={`text-[9px] font-extrabold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${activeAgent.badgeColor}`}>
-              {activeAgent.badge}
-            </span>
-          </div>
-
-          {/* Card Title & Icon */}
-          <div className="flex items-start gap-3">
-            <div className={`p-2.5 rounded-xl text-white shadow-md shrink-0 mt-0.5 ${activeAgent.iconBg}`}>
-              <Icon className="w-5 h-5 text-white" />
+      <aside
+        className={`w-72 border-r border-slate-200 bg-white flex flex-col h-screen fixed inset-y-0 left-0 z-50 lg:sticky lg:top-0 lg:z-auto shadow-xl lg:shadow-sm shrink-0 select-none transition-transform duration-300 ${
+          isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
+        {/* Brand Header */}
+        <div className="h-16 flex items-center justify-between px-5 border-b border-slate-200">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-red-600 rounded-lg text-white shadow-md shadow-red-600/30">
+              <Zap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-black text-red-700 leading-snug">
-                {activeAgent.title}
-              </h3>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed mt-1.5">
-                {activeAgent.description}
-              </p>
+              <h1 className="font-black text-sm text-slate-900 tracking-wide uppercase">STOCK ANALYSER</h1>
+              <p className="text-[10px] text-red-600 font-bold tracking-wider">ACTIVE AGENT DESK</p>
             </div>
           </div>
 
-          {/* Clean Running Status Badge */}
-          <div className="mt-4 pt-3 border-t border-red-200 flex items-center justify-between text-xs font-black text-red-600">
-            <span className="flex items-center gap-2">
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg lg:hidden"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
+        {/* Active Running Agent Card Section */}
+        <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto">
+          <div className="px-1 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Agent Active</span>
+              Active Agent Pipeline
             </span>
-            <ArrowRight className="w-4 h-4 text-red-600" />
+            <span className="text-[9px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-extrabold uppercase">
+              Running
+            </span>
           </div>
-        </div>
 
-        {/* Switch Agent Button */}
-        <button
-          onClick={() => setActiveTab('hub')}
-          className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs rounded-xl border border-slate-200 transition flex items-center justify-center gap-2 shadow-sm"
-        >
-          <ArrowLeft className="w-4 h-4 text-red-600" />
-          <span>Switch Agent (4 Agents Hub)</span>
-        </button>
-      </nav>
+          {/* The Single Active Agent Card */}
+          <div className="p-5 rounded-2xl border bg-red-50/60 border-red-500 shadow-md ring-1 ring-red-500 relative overflow-hidden">
+            {/* Card Top Strip */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">
+                {activeAgent.number}
+              </span>
+              <span className={`text-[9px] font-extrabold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${activeAgent.badgeColor}`}>
+                {activeAgent.badge}
+              </span>
+            </div>
 
-      {/* Bottom Status Card */}
-      <div className="p-3.5 border-t border-slate-100 m-3 rounded-xl bg-slate-50 border border-slate-200">
-        <div className="flex items-center justify-between text-xs mb-1">
-          <span className="text-slate-700 font-bold">Autonomous Engine</span>
-          <span className="text-emerald-600 text-[10px] font-mono font-bold">ACTIVE</span>
+            {/* Card Title & Icon */}
+            <div className="flex items-start gap-3">
+              <div className={`p-2.5 rounded-xl text-white shadow-md shrink-0 mt-0.5 ${activeAgent.iconBg}`}>
+                <Icon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-red-700 leading-snug">
+                  {activeAgent.title}
+                </h3>
+                <p className="text-xs text-slate-600 font-medium leading-relaxed mt-1.5">
+                  {activeAgent.description}
+                </p>
+              </div>
+            </div>
+
+            {/* Clean Running Status Badge */}
+            <div className="mt-4 pt-3 border-t border-red-200 flex items-center justify-between text-xs font-black text-red-600">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Agent Active</span>
+              </span>
+              <ArrowRight className="w-4 h-4 text-red-600" />
+            </div>
+          </div>
+
+          {/* Switch Agent Button */}
+          <button
+            onClick={() => {
+              setActiveTab('hub');
+              if (onCloseMobile) onCloseMobile();
+            }}
+            className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs rounded-xl border border-slate-200 transition flex items-center justify-center gap-2 shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4 text-red-600" />
+            <span>Switch Agent (4 Agents Hub)</span>
+          </button>
+        </nav>
+
+        {/* Bottom Status Card */}
+        <div className="p-3.5 border-t border-slate-100 m-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div className="flex items-center justify-between text-xs mb-1">
+            <span className="text-slate-700 font-bold">Autonomous Engine</span>
+            <span className="text-emerald-600 text-[10px] font-mono font-bold">ACTIVE</span>
+          </div>
+          <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+            Single active agent focus mode enabled. Click 'Switch Agent' to change agents.
+          </p>
         </div>
-        <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
-          Single active agent focus mode enabled. Click 'Switch Agent' to change agents.
-        </p>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };

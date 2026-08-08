@@ -26,7 +26,7 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
       subtitle: '08:30 AM IST Pre-Market ML Pipeline',
       badge: 'Supervised ML Model',
       badgeColor: 'bg-red-100 text-red-700 border-red-200',
-      description: 'Executes pre-market directional prediction (UP / DOWN / NEUTRAL) across 30+ Indian equities. Evaluates overnight US market cues, Brent crude, USD/INR, news NLP sentiment, and 30-day walk-forward backtesting.',
+      description: 'Executes pre-market directional prediction (UP / DOWN / NEUTRAL) across 2,075+ Indian equities. Evaluates overnight US market cues, Brent crude, USD/INR, real-time news NLP sentiment, and 30-day walk-forward backtesting.',
       icon: Bot,
       iconBg: 'bg-red-600 shadow-lg shadow-red-600/30',
       gradient: 'from-red-50/80 via-white to-slate-50 border-red-200 hover:border-red-500 hover:shadow-xl',
@@ -74,19 +74,19 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50/60 p-6 lg:p-10 flex flex-col justify-between max-w-7xl mx-auto select-none">
+    <div className="min-h-screen bg-slate-50/60 p-4 sm:p-6 lg:p-10 flex flex-col justify-between max-w-7xl 2xl:max-w-full 2xl:px-16 mx-auto select-none">
       {/* 1. TOP BRANDING HERO HEADER */}
       <div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-200">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 sm:pb-8 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2 text-xs text-red-600 font-extrabold uppercase tracking-wider mb-2">
               <Sparkles className="w-4 h-4 text-red-600" />
               <span>STOCK ANALYSER • AI AGENT COMMAND HUB</span>
             </div>
-            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
               Select Your Autonomous AI Agent
             </h1>
-            <p className="text-slate-600 text-sm mt-2 max-w-2xl leading-relaxed font-medium">
+            <p className="text-slate-600 text-xs sm:text-sm mt-2 max-w-2xl leading-relaxed font-medium">
               Choose an AI Agent below. Clicking any agent card immediately executes its full quantitative machine learning or financial audit pipeline and renders its detailed interactive results dashboard.
             </p>
           </div>
@@ -94,7 +94,7 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={onOpenAgentModal}
-              className="px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-black text-sm rounded-xl shadow-xl shadow-red-600/30 hover:shadow-red-600/50 transition flex items-center gap-2"
+              className="w-full sm:w-auto px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-red-600/30 hover:shadow-red-600/50 transition flex items-center justify-center gap-2"
             >
               <Zap className="w-4 h-4 text-white fill-white" />
               Run Autonomous Web Reasoning Agent
@@ -102,15 +102,15 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
           </div>
         </div>
 
-        {/* 2. AGENTS CARDS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        {/* 2. AGENTS CARDS GRID - RESPONSIVE FOR PHONES, TABS, LAPTOPS & TVS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-4 sm:gap-6 mt-6 sm:mt-8">
           {agents.map((agent) => {
             const Icon = agent.icon;
             return (
               <div
                 key={agent.id}
                 onClick={() => onSelectAgent(agent.id)}
-                className={`p-6 rounded-2xl border bg-gradient-to-br transition-all duration-200 cursor-pointer flex flex-col justify-between group shadow-sm ${agent.gradient}`}
+                className={`p-5 sm:p-6 rounded-2xl border bg-gradient-to-br transition-all duration-200 cursor-pointer flex flex-col justify-between group shadow-sm ${agent.gradient}`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -127,10 +127,10 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-black text-slate-900 group-hover:text-red-600 transition-colors">
+                      <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-red-600 transition-colors leading-snug">
                         {agent.title}
                       </h3>
-                      <p className="text-xs font-extrabold text-slate-500 mt-0.5">
+                      <p className="text-[11px] sm:text-xs font-extrabold text-slate-500 mt-0.5">
                         {agent.subtitle}
                       </p>
                     </div>
@@ -155,9 +155,9 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
       </div>
 
       {/* 3. FOOTER INFO BANNER */}
-      <div className="mt-10 p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="mt-8 sm:mt-10 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-emerald-100 rounded-xl text-emerald-700">
+          <div className="p-2 bg-emerald-100 rounded-xl text-emerald-700 shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
