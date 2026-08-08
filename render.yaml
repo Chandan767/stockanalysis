@@ -15,8 +15,9 @@ services:
         value: 3.11.8
 
   # 2. React + Vite Frontend Static Site
-  - type: static
+  - type: web
     name: stock-ai-frontend
+    env: static
     region: oregon
     plan: free
     rootDir: frontend
