@@ -3,14 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-white text-slate-900 font-sans antialiased selection:bg-red-600 selection:text-white;
+    @apply bg-white text-slate-900 font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* Completely remove blinking cursor on non-editable UI elements */
+  /* Universal cross-browser text selection (Chrome, Firefox, Edge, Safari) */
+  ::selection {
+    background-color: #dc2626;
+    color: #ffffff;
+  }
+  ::-moz-selection {
+    background-color: #dc2626;
+    color: #ffffff;
+  }
+
+  /* Prevent blinking cursor on non-editable elements across WebKit, Blink & Gecko engines */
   *:not(input):not(textarea):not([contenteditable="true"]) {
     caret-color: transparent !important;
+    -webkit-tap-highlight-color: transparent;
   }
 
   input, textarea, [contenteditable="true"] {
@@ -18,7 +39,13 @@
   }
 }
 
-/* Custom scrollbar for clean white financial dashboard */
+/* Firefox native scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+/* WebKit & Blink scrollbar styling (Chrome, Microsoft Edge, Safari, Opera) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -36,3 +63,19 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #dc2626;
 }
+
+/* Cross-browser user select compatibility classes */
+.select-none {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.select-text {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
