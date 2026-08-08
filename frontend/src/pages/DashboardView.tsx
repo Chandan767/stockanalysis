@@ -6,16 +6,12 @@ import {
   TrendingDown,
   Activity,
   Zap,
-  Globe,
   RotateCw,
   Search,
   ArrowRight,
-  Sparkles,
-  Building2,
-  Filter,
-  CheckCircle2,
   AlertTriangle,
-  Newspaper
+  Newspaper,
+  ChevronDown
 } from 'lucide-react';
 import {
   DailyMarketPredictionReport,
@@ -47,6 +43,9 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
   const [filterDirection, setFilterDirection] = useState<'ALL' | 'PROFIT' | 'LOSS' | 'NEUTRAL'>('ALL');
   const [selectedSector, setSelectedSector] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Expand / Collapse State for Live News Feed Widget
+  const [showNewsFeed, setShowNewsFeed] = useState<boolean>(true);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [backtestLoading, setBacktestLoading] = useState<boolean>(false);
@@ -309,7 +308,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
         </div>
       </div>
 
-      {/* 3. LIVE US & GLOBAL MARKET NEWS FEED WIDGET */}
+      {/* 3. LIVE US & GLOBAL MARKET NEWS FEED WIDGET WITH EXPAND / COLLAPSE BUTTON */}
       {globals?.live_news_feed && globals.live_news_feed.length > 0 && (
         <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -324,48 +323,63 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
                 </p>
               </div>
             </div>
-            <span className="px-3 py-1 bg-red-50 text-red-600 font-extrabold text-[10px] uppercase rounded-full border border-red-200">
-              Live Stream
-            </span>
+
+            <div className="flex items-center gap-3">
+              <span className="hidden sm:inline-block px-3 py-1 bg-red-50 text-red-600 font-extrabold text-[10px] uppercase rounded-full border border-red-200">
+                Live Stream
+              </span>
+
+              {/* Small Expand / Collapse Toggle Button */}
+              <button
+                onClick={() => setShowNewsFeed(!showNewsFeed)}
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs rounded-xl border border-slate-200 transition flex items-center gap-1.5 shadow-sm"
+              >
+                <span>{showNewsFeed ? 'Hide News' : 'Show News'}</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-red-600 transition-transform ${showNewsFeed ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {globals.live_news_feed.map((item, idx) => (
-              <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-slate-200 text-slate-700 uppercase">
-                      {item.region}
-                    </span>
-                    <span
-                      className={`text-[10px] font-black px-2 py-0.5 rounded ${
-                        item.sentiment === 'Positive'
-                          ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                          : item.sentiment === 'Negative'
-                          ? 'bg-red-100 text-red-700 border border-red-200'
-                          : 'bg-slate-200 text-slate-700'
-                      }`}
-                    >
-                      {item.sentiment}
-                    </span>
+          {/* Collapsible News Grid */}
+          {showNewsFeed && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
+              {globals.live_news_feed.map((item, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-slate-200 text-slate-700 uppercase">
+                        {item.region}
+                      </span>
+                      <span
+                        className={`text-[10px] font-black px-2 py-0.5 rounded ${
+                          item.sentiment === 'Positive'
+                            ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                            : item.sentiment === 'Negative'
+                            ? 'bg-red-100 text-red-700 border border-red-200'
+                            : 'bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {item.sentiment}
+                      </span>
+                    </div>
+
+                    <h4 className="font-black text-xs text-slate-900 leading-snug line-clamp-2 mt-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-[11px] text-slate-600 font-medium mt-1">
+                      {item.summary}
+                    </p>
                   </div>
 
-                  <h4 className="font-black text-xs text-slate-900 leading-snug line-clamp-2 mt-1">
-                    {item.title}
-                  </h4>
-                  <p className="text-[11px] text-slate-600 font-medium mt-1">
-                    {item.summary}
-                  </p>
+                  <div className="pt-2 border-t border-slate-200/80 mt-2">
+                    <p className="text-[10px] text-red-600 font-bold italic">
+                      Impact: {item.impact_reason}
+                    </p>
+                  </div>
                 </div>
-
-                <div className="pt-2 border-t border-slate-200/80 mt-2">
-                  <p className="text-[10px] text-red-600 font-bold italic">
-                    Impact: {item.impact_reason}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

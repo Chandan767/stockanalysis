@@ -133,6 +133,7 @@ export interface AgentStockInsight {
   free_cash_flow: number;
   rsi_14: number;
   sma_20_50_cross: string;
+  five_year_cagr?: number;
   five_year_high: number;
   five_year_low: number;
   five_year_trend: string;
@@ -231,6 +232,12 @@ export interface GlobalMarketReport {
   items: GlobalMarketItem[];
   signals: InterMarketSignals;
   live_news_feed?: GlobalNewsItem[];
+}
+
+export interface MarketOverviewData {
+  market_regime: string;
+  global_sentiment: string;
+  total_stocks: number;
 }
 
 export interface DailyBacktestStep {
