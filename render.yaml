@@ -18,7 +18,6 @@ services:
   - type: web
     name: stock-ai-frontend
     env: static
-    region: oregon
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
