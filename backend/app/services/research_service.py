@@ -20,52 +20,96 @@ CACHE_TTL_SECONDS = 120
 _CACHE_STORE: Dict[str, Dict[str, Any]] = {}
 
 TOP_INDIAN_STOCKS = [
+    # Banking & Financial Services
+    {"symbol": "SBIN", "name": "State Bank of India", "sector": "Banking & Financials"},
+    {"symbol": "HDFCBANK", "name": "HDFC Bank Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "ICICIBANK", "name": "ICICI Bank Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "AXISBANK", "name": "Axis Bank Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "KOTAKBANK", "name": "Kotak Mahindra Bank Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "INDUSINDBK", "name": "IndusInd Bank Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "BAJFINANCE", "name": "Bajaj Finance Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "BAJAJFINSV", "name": "Bajaj Finserv Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "JIOFIN", "name": "Jio Financial Services Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "REC", "name": "REC Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "PFC", "name": "Power Finance Corp. Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "IRFC", "name": "Indian Railway Finance Corp. Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "SHRIRAMFIN", "name": "Shriram Finance Ltd.", "sector": "Banking & Financials"},
+    {"symbol": "PAYTM", "name": "One97 Communications (Paytm)", "sector": "Banking & Financials"},
+
     # Information Technology
     {"symbol": "TCS", "name": "Tata Consultancy Services Ltd.", "sector": "Information Technology"},
     {"symbol": "INFY", "name": "Infosys Ltd.", "sector": "Information Technology"},
     {"symbol": "WIPRO", "name": "Wipro Ltd.", "sector": "Information Technology"},
     {"symbol": "HCLTECH", "name": "HCL Technologies Ltd.", "sector": "Information Technology"},
     {"symbol": "TECHM", "name": "Tech Mahindra Ltd.", "sector": "Information Technology"},
+    {"symbol": "LTIM", "name": "LTIMindtree Ltd.", "sector": "Information Technology"},
+    {"symbol": "PERSISTENT", "name": "Persistent Systems Ltd.", "sector": "Information Technology"},
+    {"symbol": "COFORGE", "name": "Coforge Ltd.", "sector": "Information Technology"},
 
-    # Banking & Financial Services
-    {"symbol": "HDFCBANK", "name": "HDFC Bank Ltd.", "sector": "Banking & Financials"},
-    {"symbol": "ICICIBANK", "name": "ICICI Bank Ltd.", "sector": "Banking & Financials"},
-    {"symbol": "SBIN", "name": "State Bank of India", "sector": "Banking & Financials"},
-    {"symbol": "AXISBANK", "name": "Axis Bank Ltd.", "sector": "Banking & Financials"},
-    {"symbol": "KOTAKBANK", "name": "Kotak Mahindra Bank Ltd.", "sector": "Banking & Financials"},
-    {"symbol": "BAJFINANCE", "name": "Bajaj Finance Ltd.", "sector": "Banking & Financials"},
-
-    # Energy, Oil & Power
-    {"symbol": "RELIANCE", "name": "Reliance Industries Ltd.", "sector": "Energy & Oil"},
+    # Energy, Oil, Power & Utilities
+    {"symbol": "RELIANCE", "name": "Reliance Industries Ltd.", "sector": "Energy & Power"},
     {"symbol": "NTPC", "name": "NTPC Ltd.", "sector": "Energy & Power"},
-    {"symbol": "ONGC", "name": "Oil and Natural Gas Corp. Ltd.", "sector": "Energy & Oil"},
+    {"symbol": "ONGC", "name": "Oil and Natural Gas Corp. Ltd.", "sector": "Energy & Power"},
     {"symbol": "POWERGRID", "name": "Power Grid Corp. of India", "sector": "Energy & Power"},
-    {"symbol": "BPCL", "name": "Bharat Petroleum Corp. Ltd.", "sector": "Energy & Oil"},
+    {"symbol": "BPCL", "name": "Bharat Petroleum Corp. Ltd.", "sector": "Energy & Power"},
+    {"symbol": "IOC", "name": "Indian Oil Corp. Ltd.", "sector": "Energy & Power"},
+    {"symbol": "GAIL", "name": "GAIL (India) Ltd.", "sector": "Energy & Power"},
+    {"symbol": "COALINDIA", "name": "Coal India Ltd.", "sector": "Energy & Power"},
+    {"symbol": "TATAPOWER", "name": "Tata Power Company Ltd.", "sector": "Energy & Power"},
+    {"symbol": "ADANIGREEN", "name": "Adani Green Energy Ltd.", "sector": "Energy & Power"},
+    {"symbol": "ADANIPOWER", "name": "Adani Power Ltd.", "sector": "Energy & Power"},
 
     # Automotive & Mobility
     {"symbol": "TATAMOTORS", "name": "Tata Motors Ltd.", "sector": "Automotive"},
     {"symbol": "MARUTI", "name": "Maruti Suzuki India Ltd.", "sector": "Automotive"},
     {"symbol": "M&M", "name": "Mahindra & Mahindra Ltd.", "sector": "Automotive"},
     {"symbol": "BAJAJ-AUTO", "name": "Bajaj Auto Ltd.", "sector": "Automotive"},
+    {"symbol": "EICHERMOT", "name": "Eicher Motors Ltd.", "sector": "Automotive"},
+    {"symbol": "HEROMOTOCO", "name": "Hero MotoCorp Ltd.", "sector": "Automotive"},
+    {"symbol": "TVSMOTOR", "name": "TVS Motor Company Ltd.", "sector": "Automotive"},
 
-    # Metals, Mining & Infra
-    {"symbol": "TATASTEEL", "name": "Tata Steel Ltd.", "sector": "Metals & Mining"},
-    {"symbol": "JSWSTEEL", "name": "JSW Steel Ltd.", "sector": "Metals & Mining"},
-    {"symbol": "HINDALCO", "name": "Hindalco Industries Ltd.", "sector": "Metals & Mining"},
-    {"symbol": "COALINDIA", "name": "Coal India Ltd.", "sector": "Metals & Mining"},
-    {"symbol": "LT", "name": "Larsen & Toubro Ltd.", "sector": "Infrastructure"},
+    # Pharma & Healthcare
+    {"symbol": "SUNPHARMA", "name": "Sun Pharmaceutical Industries", "sector": "Pharma & Healthcare"},
+    {"symbol": "CIPLA", "name": "Cipla Ltd.", "sector": "Pharma & Healthcare"},
+    {"symbol": "DRREDDY", "name": "Dr. Reddy's Laboratories", "sector": "Pharma & Healthcare"},
+    {"symbol": "DIVISLAB", "name": "Divi's Laboratories Ltd.", "sector": "Pharma & Healthcare"},
+    {"symbol": "APOLLOHOSP", "name": "Apollo Hospitals Enterprise", "sector": "Pharma & Healthcare"},
+    {"symbol": "LUPIN", "name": "Lupin Ltd.", "sector": "Pharma & Healthcare"},
+    {"symbol": "MANKIND", "name": "Mankind Pharma Ltd.", "sector": "Pharma & Healthcare"},
 
     # FMCG & Retail
     {"symbol": "ITC", "name": "ITC Ltd.", "sector": "FMCG"},
     {"symbol": "HINDUNILVR", "name": "Hindustan Unilever Ltd.", "sector": "FMCG"},
-    {"symbol": "TITAN", "name": "Titan Company Ltd.", "sector": "Consumer Goods"},
-    {"symbol": "TRENT", "name": "Trent Ltd.", "sector": "Retail"},
+    {"symbol": "NESTLEIND", "name": "Nestle India Ltd.", "sector": "FMCG"},
+    {"symbol": "BRITANNIA", "name": "Britannia Industries Ltd.", "sector": "FMCG"},
+    {"symbol": "TATACONSUM", "name": "Tata Consumer Products", "sector": "FMCG"},
+    {"symbol": "VBL", "name": "Varun Beverages Ltd.", "sector": "FMCG"},
+    {"symbol": "DABUR", "name": "Dabur India Ltd.", "sector": "FMCG"},
+    {"symbol": "TITAN", "name": "Titan Company Ltd.", "sector": "Consumer & Retail"},
+    {"symbol": "TRENT", "name": "Trent Ltd.", "sector": "Consumer & Retail"},
+    {"symbol": "DMART", "name": "Avenue Supermarts (DMart)", "sector": "Consumer & Retail"},
+    {"symbol": "ZOMATO", "name": "Zomato Ltd.", "sector": "Consumer & Retail"},
 
-    # Aerospace, Defense & Tech
+    # Aerospace, Defense & Industrials
     {"symbol": "BEL", "name": "Bharat Electronics Ltd.", "sector": "Aerospace & Defense"},
     {"symbol": "HAL", "name": "Hindustan Aeronautics Ltd.", "sector": "Aerospace & Defense"},
-    {"symbol": "ZOMATO", "name": "Zomato Ltd.", "sector": "Consumer Tech"},
-    {"symbol": "JIOFIN", "name": "Jio Financial Services Ltd.", "sector": "Financial Tech"}
+    {"symbol": "BHEL", "name": "Bharat Heavy Electricals Ltd.", "sector": "Aerospace & Defense"},
+    {"symbol": "SIEMENS", "name": "Siemens Ltd.", "sector": "Industrials"},
+    {"symbol": "ABB", "name": "ABB India Ltd.", "sector": "Industrials"},
+    {"symbol": "HAVELLS", "name": "Havells India Ltd.", "sector": "Industrials"},
+    {"symbol": "POLYCAB", "name": "Polycab India Ltd.", "sector": "Industrials"},
+
+    # Metals, Mining, Telecom & Infra
+    {"symbol": "BHARTIARTL", "name": "Bharti Airtel Ltd.", "sector": "Telecom"},
+    {"symbol": "TATASTEEL", "name": "Tata Steel Ltd.", "sector": "Metals & Mining"},
+    {"symbol": "JSWSTEEL", "name": "JSW Steel Ltd.", "sector": "Metals & Mining"},
+    {"symbol": "HINDALCO", "name": "Hindalco Industries Ltd.", "sector": "Metals & Mining"},
+    {"symbol": "JINDALSTEL", "name": "Jindal Steel & Power Ltd.", "sector": "Metals & Mining"},
+    {"symbol": "LT", "name": "Larsen & Toubro Ltd.", "sector": "Infrastructure"},
+    {"symbol": "ADANIPORTS", "name": "Adani Ports & SEZ Ltd.", "sector": "Infrastructure"},
+    {"symbol": "GRASIM", "name": "Grasim Industries Ltd.", "sector": "Infrastructure"},
+    {"symbol": "ULTRACEMCO", "name": "UltraTech Cement Ltd.", "sector": "Infrastructure"},
+    {"symbol": "AMBUJACEM", "name": "Ambuja Cements Ltd.", "sector": "Infrastructure"}
 ]
 
 
@@ -103,12 +147,73 @@ class FullStockResearchReport(BaseModel):
     ai_summary: AISummaryReport
 
 
+async def scan_today_market(use_mock: bool = False):
+    """Intraday opportunity scanner across equities."""
+    market_provider = get_market_data_provider(use_mock=use_mock)
+    end_d = date.today()
+    start_d = end_d - timedelta(days=90)
+
+    async def _evaluate_item(item: Dict[str, str]):
+        sym = item["symbol"]
+        try:
+            history = await market_provider.get_historical_prices(sym, start_d, end_d)
+            tech = calculate_technical_indicators(sym, history)
+            score = calculate_today_opportunity_score(sym, tech)
+            return score
+        except Exception:
+            return None
+
+    tasks = [_evaluate_item(stock) for stock in TOP_INDIAN_STOCKS]
+    results = await asyncio.gather(*tasks)
+
+    valid_results = [r for r in results if r is not None]
+    valid_results.sort(key=lambda x: x.today_opportunity_score, reverse=True)
+
+    bullish = [r for r in valid_results if r.bias == "Bullish"]
+    bearish = [r for r in valid_results if r.bias == "Bearish"]
+
+    return {
+        "scan_date": date.today().isoformat(),
+        "total_scanned": len(valid_results),
+        "bullish_candidates": bullish,
+        "bearish_candidates": bearish,
+        "all_ranked": valid_results
+    }
+
+
+async def scan_long_term_market(use_mock: bool = False):
+    """5-year quality compounder scanner across equities."""
+    fund_provider = get_fundamental_data_provider(use_mock=use_mock)
+
+    async def _evaluate_item(item: Dict[str, str]):
+        sym = item["symbol"]
+        try:
+            fund = await fund_provider.get_fundamentals(sym)
+            score = calculate_long_term_quality_score(fund)
+            return score
+        except Exception:
+            return None
+
+    tasks = [_evaluate_item(stock) for stock in TOP_INDIAN_STOCKS]
+    results = await asyncio.gather(*tasks)
+
+    valid_results = [r for r in results if r is not None]
+    valid_results.sort(key=lambda x: x.long_term_score, reverse=True)
+
+    return {
+        "scan_date": date.today().isoformat(),
+        "total_scanned": len(valid_results),
+        "top_quality_stocks": valid_results[:10],
+        "all_ranked": valid_results
+    }
+
+
 async def get_today_stock_score(symbol: str, use_mock: bool = False) -> TodayScoreResult:
     """Fast lightweight calculation of Today's Opportunity Score using OHLCV price series."""
     market_provider = get_market_data_provider(use_mock=use_mock)
     end_d = date.today()
     start_d = end_d - timedelta(days=90)
-    
+
     history = await market_provider.get_historical_prices(symbol, start_d, end_d)
     tech_results = calculate_technical_indicators(symbol, history)
     return calculate_today_opportunity_score(symbol, tech_results)
@@ -202,7 +307,10 @@ async def get_full_stock_report(symbol: str, use_mock: bool = False) -> FullStoc
     news_provider = get_news_data_provider(use_mock=use_mock)
 
     sym_clean = symbol.upper()
-    stock_info = next((s for s in TOP_INDIAN_STOCKS if s["symbol"] == sym_clean), {"symbol": sym_clean, "name": f"{sym_clean} Ltd."})
+    stock_info = next(
+        (s for s in TOP_INDIAN_STOCKS if s["symbol"] == sym_clean),
+        {"symbol": sym_clean, "name": f"{sym_clean} (NSE/BSE Equities)"}
+    )
 
     end_d = date.today()
     start_d = end_d - timedelta(days=90)
@@ -254,62 +362,6 @@ async def get_full_stock_report(symbol: str, use_mock: bool = False) -> FullStoc
         recent_news=processed_news,
         ai_summary=ai_summary
     )
-
-    _CACHE_STORE[cache_key] = {"data": result, "time": now_ts}
-    return result
-
-
-async def scan_today_market(use_mock: bool = False) -> Dict[str, Any]:
-    """Fast backend scanner engine for Today's Market Research."""
-    cache_key = f"scan_today_{use_mock}"
-    now_ts = time.time()
-    if cache_key in _CACHE_STORE and (now_ts - _CACHE_STORE[cache_key]["time"]) < CACHE_TTL_SECONDS:
-        return _CACHE_STORE[cache_key]["data"]
-
-    # Use fast lightweight today scores across premier Indian equities
-    tasks = [get_today_stock_score(stock["symbol"], use_mock=use_mock) for stock in TOP_INDIAN_STOCKS]
-    today_scores: List[TodayScoreResult] = await asyncio.gather(*tasks)
-
-    bullish = sorted([s for s in today_scores if s.bias == "Bullish"], key=lambda x: x.today_opportunity_score, reverse=True)
-    bearish = sorted([s for s in today_scores if s.bias == "Bearish"], key=lambda x: x.today_opportunity_score)
-    momentum = sorted(today_scores, key=lambda x: x.momentum_score, reverse=True)
-    volume_surge = [s for s in today_scores if s.unusual_volume]
-    breakouts = [s for s in today_scores if s.breakout_candidate]
-
-    result = {
-        "scan_date": date.today().isoformat(),
-        "total_scanned": len(today_scores),
-        "bullish_candidates": bullish,
-        "bearish_candidates": bearish,
-        "momentum_leaders": momentum[:10],
-        "volume_surges": volume_surge,
-        "breakout_candidates": breakouts
-    }
-
-    _CACHE_STORE[cache_key] = {"data": result, "time": now_ts}
-    return result
-
-
-async def scan_long_term_market(use_mock: bool = False) -> Dict[str, Any]:
-    """Backend scanner engine for Long-Term Stock Research."""
-    cache_key = f"scan_lt_{use_mock}"
-    now_ts = time.time()
-    if cache_key in _CACHE_STORE and (now_ts - _CACHE_STORE[cache_key]["time"]) < CACHE_TTL_SECONDS:
-        return _CACHE_STORE[cache_key]["data"]
-
-    tasks = [get_full_stock_report(stock["symbol"], use_mock=use_mock) for stock in TOP_INDIAN_STOCKS]
-    candidates_reports: List[FullStockResearchReport] = await asyncio.gather(*tasks)
-    candidates = [c.long_term_score for c in candidates_reports]
-
-    sorted_candidates = sorted(candidates, key=lambda x: x.long_term_score, reverse=True)
-
-    result = {
-        "scan_date": date.today().isoformat(),
-        "total_scanned": len(candidates),
-        "strong_candidates": [c for c in sorted_candidates if c.classification == "Strong Long-Term Candidate"],
-        "watchlist_candidates": [c for c in sorted_candidates if c.classification == "Watchlist Candidate"],
-        "all_ranked": sorted_candidates
-    }
 
     _CACHE_STORE[cache_key] = {"data": result, "time": now_ts}
     return result
