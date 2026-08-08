@@ -1,22 +1,26 @@
 import * as React from 'react';
 import { 
   Bot, 
-  TrendingUp, 
   Target, 
   Search, 
-  Zap, 
-  ArrowRight, 
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  LogIn,
+  UserPlus,
+  User,
+  LogOut,
+  ArrowRight
 } from 'lucide-react';
 
 interface AgentHubViewProps {
   onSelectAgent: (agentId: string) => void;
-  onOpenAgentModal: () => void;
+  onOpenAuth: (mode: 'signin' | 'signup') => void;
+  user?: { name: string; email: string } | null;
+  onLogout?: () => void;
 }
 
 export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewProps) => {
-  const { onSelectAgent, onOpenAgentModal } = props;
+  const { onSelectAgent, onOpenAuth, user, onLogout } = props;
 
   const agents = [
     {
@@ -33,21 +37,8 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
       ctaText: 'Launch Daily Direction Agent'
     },
     {
-      id: 'today',
-      number: 'AGENT 02',
-      title: 'Intraday Momentum & Breakout Agent',
-      subtitle: 'Intraday Volume Surge & Technical Scanner',
-      badge: 'Real-Time Intraday',
-      badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-      description: 'Scans live technical indicators, 20/50 SMA golden crosses, RSI momentum surges, volume spikes, and high-opportunity breakout setups for active daily session trading.',
-      icon: TrendingUp,
-      iconBg: 'bg-emerald-600 shadow-lg shadow-emerald-600/30',
-      gradient: 'from-emerald-50/80 via-white to-slate-50 border-emerald-200 hover:border-emerald-500 hover:shadow-xl',
-      ctaText: 'Launch Intraday Momentum Agent'
-    },
-    {
       id: 'longterm',
-      number: 'AGENT 03',
+      number: 'AGENT 02',
       title: '5-Year Growth & Value Agent',
       subtitle: '5Y CAGR & ROE Quality Audit Engine',
       badge: '5Y CAGR Quality',
@@ -60,7 +51,7 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
     },
     {
       id: 'stock',
-      number: 'AGENT 04',
+      number: 'AGENT 03',
       title: 'Deep Equity Audit Agent',
       subtitle: '360° Multi-Dimensional Stock Report & NLP',
       badge: '360° Stock NLP',
@@ -92,18 +83,50 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={onOpenAgentModal}
-              className="w-full sm:w-auto px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs sm:text-sm rounded-xl shadow-xl shadow-red-600/30 hover:shadow-red-600/50 transition flex items-center justify-center gap-2"
-            >
-              <Zap className="w-4 h-4 text-white fill-white" />
-              Run Autonomous Web Reasoning Agent
-            </button>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl shadow-xs">
+                  <div className="w-7 h-7 bg-red-600 rounded-lg flex items-center justify-center text-white font-black text-xs">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs font-black text-slate-900 leading-none">{user.name}</p>
+                    <p className="text-[10px] text-slate-500 font-semibold">{user.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={onLogout}
+                  className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition border border-slate-200 flex items-center gap-1.5 text-xs font-extrabold"
+                  title="Log Out"
+                >
+                  <LogOut className="w-4 h-4 text-slate-600" />
+                  <span className="hidden sm:inline">Log Out</span>
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => onOpenAuth('signin')}
+                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-900 font-extrabold text-xs sm:text-sm rounded-xl border border-slate-200 shadow-sm transition flex items-center justify-center gap-2"
+                >
+                  <LogIn className="w-4 h-4 text-red-600" />
+                  <span>Sign In</span>
+                </button>
+
+                <button
+                  onClick={() => onOpenAuth('signup')}
+                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-red-600/30 hover:shadow-red-600/50 transition flex items-center justify-center gap-2"
+                >
+                  <UserPlus className="w-4 h-4 text-white" />
+                  <span>Sign Up</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
 
         {/* 2. AGENTS CARDS GRID - RESPONSIVE FOR PHONES, TABS, LAPTOPS & TVS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-4 sm:gap-6 mt-6 sm:mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 sm:mt-8">
           {agents.map((agent) => {
             const Icon = agent.icon;
             return (
@@ -165,7 +188,7 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
               Zero Hallucination Quantitative Engine
             </h4>
             <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-              All 4 agents evaluate strict mathematical models (OHLCV indicators, ROE/ROCE quality scores, Walk-Forward backtests).
+              All 3 agents evaluate strict mathematical models (OHLCV indicators, ROE/ROCE quality scores, Walk-Forward backtests).
             </p>
           </div>
         </div>

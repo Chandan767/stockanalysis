@@ -32,7 +32,7 @@ export const AgentAnalysisModal: React.FC<AgentAnalysisModalProps> = (props: Age
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200 bg-slate-50">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-red-600 rounded-xl text-white shadow-lg shadow-red-600/30 animate-pulse">
+            <div className="p-2.5 bg-red-600 rounded-xl text-white shadow-lg shadow-red-600/30">
               <Bot className="w-6 h-6 text-white" />
             </div>
             <div>

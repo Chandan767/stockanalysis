@@ -22,45 +22,34 @@ export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
 
   const agentCards = [
     {
-      id: 'today',
+      id: 'dashboard',
       number: 'AGENT 01',
-      title: "Today's Opportunity Agent",
-      badge: 'Intraday Scanner',
-      badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-      description: 'Scans NSE equities for high-momentum intraday setups',
+      title: 'Daily Direction Prediction Agent',
+      badge: 'Supervised ML Model',
+      badgeColor: 'bg-red-100 text-red-800 border-red-200',
+      description: 'Executes pre-market directional predictions across NSE equities',
       icon: TrendingUp,
-      accentColor: 'text-emerald-600',
-      iconBg: 'bg-emerald-600'
+      accentColor: 'text-red-600',
+      iconBg: 'bg-red-600'
     },
     {
       id: 'longterm',
       number: 'AGENT 02',
-      title: 'Long-Term Quality Agent',
+      title: '5-Year Growth & Value Agent',
       badge: '5-Year Compounder',
-      badgeColor: 'bg-blue-100 text-blue-800 border-blue-200',
-      description: 'Filters ROE > 20%, low debt, and free cash flow compounders',
-      icon: BarChart3,
-      accentColor: 'text-blue-600',
-      iconBg: 'bg-blue-600'
-    },
-    {
-      id: 'backtest',
-      number: 'AGENT 03',
-      title: 'Backtest Strategy Agent',
-      badge: 'Quantitative Engine',
       badgeColor: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-      description: 'Simulates win-rates, Sharpe ratios, and drawdown curves',
+      description: 'Audits 5Y CAGR, ROE/ROCE quality, free cash flow & debt',
       icon: Target,
       accentColor: 'text-indigo-600',
       iconBg: 'bg-indigo-600'
     },
     {
       id: 'stock',
-      number: 'AGENT 04',
+      number: 'AGENT 03',
       title: 'Deep Equity Audit Agent',
       badge: '360° Stock NLP',
       badgeColor: 'bg-violet-100 text-violet-700 border-violet-200',
-      description: 'Full multi-dimensional stock report & NLP sentiment',
+      description: 'Full multi-dimensional stock report & news sentiment NLP',
       icon: Search,
       accentColor: 'text-violet-600',
       iconBg: 'bg-violet-600'
@@ -168,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
             className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs rounded-xl border border-slate-200 transition flex items-center justify-center gap-2 shadow-sm"
           >
             <ArrowLeft className="w-4 h-4 text-red-600" />
-            <span>Switch Agent (4 Agents Hub)</span>
+            <span>Switch Agent (3 Agents Hub)</span>
           </button>
         </nav>
 

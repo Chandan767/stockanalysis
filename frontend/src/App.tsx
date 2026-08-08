@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { AgentHubView } from './pages/AgentHubView';
@@ -8,17 +8,42 @@ import { TodayResearchView } from './pages/TodayResearchView';
 import { LongTermResearchView } from './pages/LongTermResearchView';
 import { StockAnalysisView } from './pages/StockAnalysisView';
 import { AgentAnalysisModal } from './components/AgentAnalysisModal';
+import { AuthModal } from './components/AuthModal';
 import { fetchAgentAnalysis } from './services/api';
 import { AgentAnalysisReport } from './types';
 
 export const App: React.FC = () => {
-  // Default landing view is the 4 Autonomous AI Agent Command Hub
+  // Default landing view is the 3 Autonomous AI Agent Command Hub
   const [activeTab, setActiveTab] = useState<string>('hub');
-  const [selectedStock, setSelectedStock] = useState<string>('TCS');
+  const [selectedStock, setSelectedStock] = useState<string>('');
 
   const [agentModalOpen, setAgentModalOpen] = useState<boolean>(false);
   const [agentReport, setAgentReport] = useState<AgentAnalysisReport | null>(null);
   const [agentLoading, setAgentLoading] = useState<boolean>(false);
+
+  // Auth Modal & User State
+  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('stock_user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {}
+    }
+  }, []);
+
+  const handleOpenAuth = (mode: 'signin' | 'signup') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('stock_user');
+    setUser(null);
+  };
 
   // Mobile drawer state
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
@@ -51,15 +76,17 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans">
       {activeTab === 'hub' ? (
-        /* FIRST PAGE / HOME: FULL-SCREEN 4 AUTONOMOUS AI AGENT COMMAND HUB */
+        /* FIRST PAGE / HOME: FULL-SCREEN 3 AUTONOMOUS AI AGENT COMMAND HUB */
         <AgentHubView
           onSelectAgent={(agentId: string) => setActiveTab(agentId)}
-          onOpenAgentModal={handleOpenAgentModal}
+          onOpenAuth={handleOpenAuth}
+          user={user}
+          onLogout={handleLogout}
         />
       ) : (
         /* SELECTED AGENT RESULTS VIEW WITH SIDEBAR & BACK BUTTON */
         <div className="flex h-screen bg-white text-slate-900 overflow-hidden">
-          {/* Sidebar Navigation with 4 Agent Cards */}
+          {/* Sidebar Navigation */}
           <Sidebar
             activeTab={activeTab}
             setActiveTab={(tab: string) => setActiveTab(tab)}
@@ -73,6 +100,9 @@ export const App: React.FC = () => {
               showBackHub={true}
               onBackToHub={() => setActiveTab('hub')}
               onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+              onOpenAuth={handleOpenAuth}
+              user={user}
+              onLogout={handleLogout}
             />
 
             <main className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 bg-slate-50/50">
@@ -98,6 +128,14 @@ export const App: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+        onAuthSuccess={(u) => setUser(u)}
+      />
 
       {/* Agent Analysis Modal */}
       <AgentAnalysisModal

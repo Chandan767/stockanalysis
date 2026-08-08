@@ -57,8 +57,8 @@ def calculate_calibrated_probabilities(
     us_nasdaq_ret: float,
     news_weighted_score: float,
     relative_nifty_5d: float,
-    adx_val: float
-) -> Tuple[float, float, float, str, float, float, float, float]:
+    adx_val: Optional[float] = None
+) -> Tuple[float, float, float, str, str, float, float, float]:
     """
     Supervised Machine Learning Inference Pipeline:
     Combines Technical indicators, Global Overnight Markets, Macro, and Structured News NLP
@@ -159,7 +159,7 @@ async def predict_single_stock(stock: Dict[str, str], global_report: Any, use_mo
             us_nasdaq_ret=nasdaq_ret,
             news_weighted_score=news_feat.weighted_news_score,
             relative_nifty_5d=tech_feat.relative_strength_vs_nifty_5d,
-            adx_val=tech_feat.adx_14
+            adx_val=tech_feat.adx_14 or 25.0
         )
 
         reasons = []
@@ -224,13 +224,16 @@ async def predict_single_stock(stock: Dict[str, str], global_report: Any, use_mo
         )
 
 
-async def run_daily_market_prediction_engine(use_mock: bool = False) -> DailyMarketPredictionReport:
+async def run_daily_market_prediction_engine(use_mock: bool = False, force_refresh: bool = False) -> DailyMarketPredictionReport:
     """
     Phase 5 ML Pipeline:
-    Executes pre-market 08:30 IST direction prediction across configured stock universe.
+    Executes direction prediction across configured stock universe.
     Ranks stocks into Potential Gainers, Potential Losers, and Uncertain candidates.
     """
     now_ts = time.time()
+    if force_refresh:
+        _PREDICTION_CACHE.clear()
+
     if "daily_report" in _PREDICTION_CACHE and (now_ts - _PREDICTION_CACHE["time"]) < PREDICTION_CACHE_TTL:
         return _PREDICTION_CACHE["daily_report"]
 

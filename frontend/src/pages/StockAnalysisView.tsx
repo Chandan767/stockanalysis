@@ -37,9 +37,9 @@ const REAL_NSE_BSE_STOCKS: StockItem[] = (nifty500Data as any[]).map((item: any)
 }));
 
 export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: StockAnalysisViewProps) => {
-  const { initialSymbol = 'TCS' } = props;
+  const { initialSymbol = '' } = props;
 
-  const [symbol, setSymbol] = useState<string>(initialSymbol);
+  const [symbol, setSymbol] = useState<string>(initialSymbol || 'RELIANCE');
   const [searchInput, setSearchInput] = useState<string>(initialSymbol);
   const [report, setReport] = useState<FullStockResearchReport | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

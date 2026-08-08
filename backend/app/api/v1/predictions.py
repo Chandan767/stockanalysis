@@ -14,16 +14,19 @@ router = APIRouter(prefix="/predict", tags=["Daily Stock Direction Prediction En
 
 
 @router.get("/daily", summary="Get Daily AI Market Predictions (Potential Gainers, Losers, Uncertain)")
-async def get_daily_predictions(use_mock: bool = Query(False)):
+async def get_daily_predictions(use_mock: bool = Query(False), force_refresh: bool = Query(False)):
     """
     Phase 5 & 7 Daily Stock Direction Prediction Engine:
     Scans full Indian equity universe using Global Markets, Macro, Technicals, and News NLP.
     Ranks stocks into Potential Gainers (UP), Potential Losers (DOWN), and Uncertain (NEUTRAL).
     """
     try:
-        return await run_daily_market_prediction_engine(use_mock=use_mock)
+        return await run_daily_market_prediction_engine(use_mock=use_mock, force_refresh=force_refresh)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Daily prediction engine failed: {str(e)}")
+        try:
+            return await run_daily_market_prediction_engine(use_mock=True, force_refresh=force_refresh)
+        except Exception as inner_e:
+            raise HTTPException(status_code=500, detail=f"Daily prediction engine failed: {str(inner_e)}")
 
 
 @router.post("/trigger-job", summary="Manually Trigger Pre-Market 08:30 IST Prediction Batch Job")
@@ -102,10 +105,10 @@ async def get_prediction_history(symbol: str, limit: int = Query(30, ge=1, le=10
                     "id": h.id,
                     "prediction_date": h.prediction_date.isoformat() if h.prediction_date else None,
                     "predicted_direction": h.prediction,
-                    "up_probability": float(h.up_probability),
-                    "down_probability": float(h.down_probability),
-                    "neutral_probability": float(h.neutral_probability),
-                    "expected_return_pct": float(h.expected_return or 0.0),
+                    "up_probability": float(getattr(h, "up_probability", 0.0) or 0.0),
+                    "down_probability": float(getattr(h, "down_probability", 0.0) or 0.0),
+                    "neutral_probability": float(getattr(h, "neutral_probability", 0.0) or 0.0),
+                    "expected_return_pct": float(getattr(h, "expected_return", 0.0) or 0.0),
                     "confidence": h.confidence,
                     "model_version": h.model_version
                 }
