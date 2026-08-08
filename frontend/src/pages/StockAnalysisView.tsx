@@ -8,7 +8,11 @@ import {
   Newspaper, 
   Cpu, 
   ShieldAlert, 
-  CheckCircle2 
+  CheckCircle2,
+  Building2,
+  Filter,
+  ChevronDown,
+  Sparkles
 } from 'lucide-react';
 import { fetchStockReport } from '../services/api';
 import { FullStockResearchReport } from '../types';
@@ -16,6 +20,56 @@ import { FullStockResearchReport } from '../types';
 interface StockAnalysisViewProps {
   initialSymbol?: string;
 }
+
+// Complete Directory of Real Verified NSE & BSE Equities
+const REAL_NSE_BSE_STOCKS = [
+  // Banking & Financial Services
+  { symbol: 'SBIN', name: 'State Bank of India', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
+  { symbol: 'HDFCBANK', name: 'HDFC Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
+  { symbol: 'ICICIBANK', name: 'ICICI Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
+  { symbol: 'AXISBANK', name: 'Axis Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
+  { symbol: 'KOTAKBANK', name: 'Kotak Mahindra Bank Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
+  { symbol: 'BAJFINANCE', name: 'Bajaj Finance Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
+  { symbol: 'JIOFIN', name: 'Jio Financial Services Ltd.', sector: 'Banking & Finance', exchange: 'NSE/BSE' },
+
+  // Information Technology
+  { symbol: 'TCS', name: 'Tata Consultancy Services Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
+  { symbol: 'INFY', name: 'Infosys Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
+  { symbol: 'WIPRO', name: 'Wipro Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
+  { symbol: 'HCLTECH', name: 'HCL Technologies Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
+  { symbol: 'TECHM', name: 'Tech Mahindra Ltd.', sector: 'Information Tech', exchange: 'NSE/BSE' },
+
+  // Energy, Oil & Power
+  { symbol: 'RELIANCE', name: 'Reliance Industries Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
+  { symbol: 'NTPC', name: 'NTPC Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
+  { symbol: 'ONGC', name: 'Oil and Natural Gas Corp. Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
+  { symbol: 'POWERGRID', name: 'Power Grid Corp. of India', sector: 'Energy & Power', exchange: 'NSE/BSE' },
+  { symbol: 'BPCL', name: 'Bharat Petroleum Corp. Ltd.', sector: 'Energy & Power', exchange: 'NSE/BSE' },
+
+  // Automotive & Mobility
+  { symbol: 'TATAMOTORS', name: 'Tata Motors Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
+  { symbol: 'MARUTI', name: 'Maruti Suzuki India Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
+  { symbol: 'M&M', name: 'Mahindra & Mahindra Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
+  { symbol: 'BAJAJ-AUTO', name: 'Bajaj Auto Ltd.', sector: 'Automotive', exchange: 'NSE/BSE' },
+
+  // Aerospace & Defense
+  { symbol: 'BEL', name: 'Bharat Electronics Ltd.', sector: 'Defense & Aerospace', exchange: 'NSE/BSE' },
+  { symbol: 'HAL', name: 'Hindustan Aeronautics Ltd.', sector: 'Defense & Aerospace', exchange: 'NSE/BSE' },
+
+  // FMCG, Retail & Consumer Tech
+  { symbol: 'ITC', name: 'ITC Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
+  { symbol: 'HINDUNILVR', name: 'Hindustan Unilever Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
+  { symbol: 'TITAN', name: 'Titan Company Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
+  { symbol: 'TRENT', name: 'Trent Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
+  { symbol: 'ZOMATO', name: 'Zomato Ltd.', sector: 'Consumer & Retail', exchange: 'NSE/BSE' },
+
+  // Metals, Mining & Infra
+  { symbol: 'TATASTEEL', name: 'Tata Steel Ltd.', sector: 'Metals & Mining', exchange: 'NSE/BSE' },
+  { symbol: 'JSWSTEEL', name: 'JSW Steel Ltd.', sector: 'Metals & Mining', exchange: 'NSE/BSE' },
+  { symbol: 'HINDALCO', name: 'Hindalco Industries Ltd.', sector: 'Metals & Mining', exchange: 'NSE/BSE' },
+  { symbol: 'COALINDIA', name: 'Coal India Ltd.', sector: 'Metals & Mining', exchange: 'NSE/BSE' },
+  { symbol: 'LT', name: 'Larsen & Toubro Ltd.', sector: 'Infrastructure', exchange: 'NSE/BSE' }
+];
 
 export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: StockAnalysisViewProps) => {
   const { initialSymbol = 'TCS' } = props;
@@ -26,6 +80,10 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'ai' | 'technical' | 'fundamental' | 'news'>('ai');
+
+  // Sector Directory Filter State
+  const [selectedSector, setSelectedSector] = useState<string>('ALL');
+  const [showDirectory, setShowDirectory] = useState<boolean>(true);
 
   const loadStockReport = (sym: string) => {
     setLoading(true);
@@ -50,49 +108,130 @@ export const StockAnalysisView: React.FC<StockAnalysisViewProps> = (props: Stock
     }
   };
 
-  const quickStocks = ['TCS', 'RELIANCE', 'INFY', 'HDFCBANK', 'ICICIBANK'];
+  const handleSelectFromDirectory = (selectedSym: string) => {
+    setSymbol(selectedSym);
+    setSearchInput(selectedSym);
+  };
+
+  // Filter stocks by sector and search query
+  const filteredStocks = REAL_NSE_BSE_STOCKS.filter((st) => {
+    const matchesSector = selectedSector === 'ALL' || st.sector === selectedSector;
+    const matchesQuery =
+      st.symbol.toLowerCase().includes(searchInput.toLowerCase()) ||
+      st.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+      st.sector.toLowerCase().includes(searchInput.toLowerCase());
+    return matchesSector && matchesQuery;
+  });
+
+  const sectors = ['ALL', 'Banking & Finance', 'Information Tech', 'Energy & Power', 'Automotive', 'Defense & Aerospace', 'Consumer & Retail', 'Metals & Mining'];
 
   return (
     <div className="space-y-8">
-      {/* Search Bar & Quick Tickers */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <form onSubmit={handleSearch} className="flex items-center space-x-3 flex-1 max-w-lg">
+      {/* 1. TOP INTERACTIVE NSE/BSE REAL STOCK DIRECTORY SELECTOR */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <div className="flex items-center gap-2 text-xs text-red-600 font-extrabold uppercase tracking-wider mb-1">
+              <Building2 className="w-4 h-4 text-red-600" />
+              <span>REAL NSE & BSE EQUITIES DIRECTORY</span>
+            </div>
+            <h2 className="text-xl font-black text-slate-900">
+              Select Indian Stock for Deep Audit
+            </h2>
+            <p className="text-xs text-slate-500 font-medium mt-0.5">
+              Click any company below or search to trigger Agent 04's live multi-dimensional analysis pipeline.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setShowDirectory(!showDirectory)}
+            className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition flex items-center gap-1.5 self-start sm:self-auto"
+          >
+            <Filter className="w-3.5 h-3.5 text-red-600" />
+            <span>{showDirectory ? 'Hide Directory' : 'Show Directory'}</span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDirectory ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+
+        {/* SEARCH FORM */}
+        <form onSubmit={handleSearch} className="flex items-center space-x-3 max-w-2xl">
           <div className="relative w-full">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-red-600" />
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search symbol (e.g. TCS, RELIANCE, INFY)..."
+              placeholder="Filter by company name or ticker (e.g. State Bank of India, TCS, RELIANCE)..."
               className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 font-bold"
             />
           </div>
           <button
             type="submit"
-            className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-xl transition-all shadow-md shadow-red-600/30"
+            className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-xl transition-all shadow-md shadow-red-600/30 shrink-0"
           >
             Analyze
           </button>
         </form>
 
-        <div className="flex items-center space-x-2">
-          <span className="text-xs font-bold text-slate-500">Quick Select:</span>
-          {quickStocks.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setSymbol(s); setSearchInput(s); }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all ${
-                symbol === s
-                  ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm'
-                  : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200'
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
+        {/* SECTOR FILTER TABS & STOCK CARDS GRID */}
+        {showDirectory && (
+          <div className="space-y-4 pt-2">
+            {/* Sector Tabs */}
+            <div className="flex flex-wrap gap-2 pb-2 border-b border-slate-100">
+              {sectors.map((sec) => (
+                <button
+                  key={sec}
+                  onClick={() => setSelectedSector(sec)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    selectedSector === sec
+                      ? 'bg-red-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200'
+                  }`}
+                >
+                  {sec === 'ALL' ? 'All Equities (30+)' : sec}
+                </button>
+              ))}
+            </div>
+
+            {/* Stocks Directory Cards Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-64 overflow-y-auto p-1">
+              {filteredStocks.map((st) => {
+                const isSelected = symbol === st.symbol;
+                return (
+                  <div
+                    key={st.symbol}
+                    onClick={() => handleSelectFromDirectory(st.symbol)}
+                    className={`p-3 rounded-xl border transition cursor-pointer flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-red-50/80 border-red-600 ring-1 ring-red-600 shadow-sm'
+                        : 'bg-slate-50 border-slate-200 hover:border-red-400 hover:bg-white'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-black text-xs text-slate-900">{st.symbol}</span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-600">
+                          {st.exchange}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 font-semibold truncate mt-1">{st.name}</p>
+                    </div>
+
+                    <div className="mt-2 pt-1 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
+                      <span className="text-slate-400 font-medium truncate">{st.sector}</span>
+                      <span className={`font-extrabold ${isSelected ? 'text-red-600' : 'text-slate-500'}`}>
+                        {isSelected ? '● Selected' : 'Audit →'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* 2. REPORT BODY OR LOADING STATE */}
       {loading ? (
         <div className="flex items-center justify-center h-64 text-slate-700 font-bold text-sm space-x-2">
           <Activity className="w-5 h-5 animate-spin text-red-600" />
