@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { Search, Bell, Activity } from 'lucide-react';
 
-export const Header = () => {
+export const Header: React.FC = () => {
   return (
     <header className="h-16 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center space-x-4 flex-1 max-w-xl">
@@ -26,8 +27,8 @@ export const Header = () => {
         </button>
 
         <div className="flex items-center space-x-2 border-l border-slate-800 pl-4">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center font-bold text-xs text-white">
-            QUANT
+          <div className="px-2.5 py-1 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center font-bold text-xs text-white">
+            Stock Analyser
           </div>
           <span className="text-xs font-semibold text-slate-300">Indian Market Desk</span>
         </div>

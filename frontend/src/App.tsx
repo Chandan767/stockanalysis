@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
@@ -5,15 +6,36 @@ import { DashboardView } from './pages/DashboardView';
 import { TodayResearchView } from './pages/TodayResearchView';
 import { LongTermResearchView } from './pages/LongTermResearchView';
 import { StockAnalysisView } from './pages/StockAnalysisView';
-import { WatchlistView } from './pages/WatchlistView';
+import { AgentAnalysisModal } from './components/AgentAnalysisModal';
+import { fetchAgentAnalysis } from './services/api';
+import { AgentAnalysisReport } from './types';
 
-export const App = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedStock, setSelectedStock] = useState('TCS');
+export const App: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [selectedStock, setSelectedStock] = useState<string>('TCS');
+
+  const [agentModalOpen, setAgentModalOpen] = useState<boolean>(false);
+  const [agentReport, setAgentReport] = useState<AgentAnalysisReport | null>(null);
+  const [agentLoading, setAgentLoading] = useState<boolean>(false);
 
   const handleSelectStock = (symbol: string) => {
     setSelectedStock(symbol);
     setActiveTab('stock');
+  };
+
+  const handleOpenAgentModal = async () => {
+    setAgentModalOpen(true);
+    if (!agentReport && !agentLoading) {
+      setAgentLoading(true);
+      try {
+        const report = await fetchAgentAnalysis();
+        setAgentReport(report);
+      } catch (err) {
+        console.error('Agent analysis error:', err);
+      } finally {
+        setAgentLoading(false);
+      }
+    }
   };
 
   return (
@@ -27,41 +49,27 @@ export const App = () => {
 
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-7xl mx-auto">
-            {activeTab === 'dashboard' && <DashboardView onSelectStock={handleSelectStock} />}
+            {activeTab === 'dashboard' && (
+              <DashboardView
+                onSelectStock={handleSelectStock}
+                onOpenAgentModal={handleOpenAgentModal}
+              />
+            )}
             {activeTab === 'today' && <TodayResearchView onSelectStock={handleSelectStock} />}
             {activeTab === 'longterm' && <LongTermResearchView onSelectStock={handleSelectStock} />}
             {activeTab === 'stock' && <StockAnalysisView initialSymbol={selectedStock} />}
-            {activeTab === 'watchlist' && <WatchlistView onSelectStock={handleSelectStock} />}
-            {activeTab === 'backtest' && (
-              <div className="p-8 text-center bg-slate-900/40 rounded-2xl border border-slate-800 space-y-2">
-                <h2 className="text-xl font-bold text-slate-200">Quantitative Backtesting Engine</h2>
-                <p className="text-xs text-slate-400">Historical Strategy Simulation, Win Rate, CAGR & Sharpe Ratio benchmarking against NIFTY 50 (Phase 13 Module).</p>
-              </div>
-            )}
-            {activeTab === 'news' && (
-              <div className="p-8 text-center bg-slate-900/40 rounded-2xl border border-slate-800 space-y-2">
-                <h2 className="text-xl font-bold text-slate-200">Market News & Sentiment Radar</h2>
-                <p className="text-xs text-slate-400">Live Indian equity news feed aggregated from Economic Times, LiveMint, and Financial Express.</p>
-              </div>
-            )}
-            {activeTab === 'settings' && (
-              <div className="p-8 bg-slate-900/40 rounded-2xl border border-slate-800 space-y-4">
-                <h2 className="text-xl font-bold text-slate-200">Scoring Engine Configuration</h2>
-                <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-                  <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                    <span className="text-slate-500 block">Today Technical Weight</span>
-                    <span className="text-indigo-400 font-bold">30%</span>
-                  </div>
-                  <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                    <span className="text-slate-500 block">Long-Term Fundamental Weight</span>
-                    <span className="text-emerald-400 font-bold">25%</span>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </main>
       </div>
+
+      {/* Agent Analysis Modal */}
+      <AgentAnalysisModal
+        isOpen={agentModalOpen}
+        onClose={() => setAgentModalOpen(false)}
+        report={agentReport}
+        loading={agentLoading}
+        onSelectStock={handleSelectStock}
+      />
     </div>
   );
 };

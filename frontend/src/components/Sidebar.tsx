@@ -1,12 +1,9 @@
+import * as React from 'react';
 import { 
   LayoutDashboard, 
   TrendingUp, 
   Target, 
   BarChart3, 
-  Bookmark, 
-  History, 
-  Newspaper, 
-  Sliders, 
   Zap 
 } from 'lucide-react';
 
@@ -15,16 +12,14 @@ interface SidebarProps {
   setActiveTab: (tab: string) => void;
 }
 
-export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
+export const Sidebar: React.FC<SidebarProps> = (props: SidebarProps) => {
+  const { activeTab, setActiveTab } = props;
+
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'today', label: "Today's Research", icon: TrendingUp },
     { id: 'longterm', label: 'Long-Term Research', icon: Target },
-    { id: 'stock', label: 'Stock Analysis', icon: BarChart3 },
-    { id: 'watchlist', label: 'Watchlist', icon: Bookmark },
-    { id: 'backtest', label: 'Backtesting', icon: History },
-    { id: 'news', label: 'News & Sentiment', icon: Newspaper },
-    { id: 'settings', label: 'Settings', icon: Sliders },
+    { id: 'stock', label: 'Stock Analysis', icon: BarChart3 }
   ];
 
   return (
@@ -35,7 +30,7 @@ export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
           <Zap className="w-5 h-5" />
         </div>
         <div>
-          <h1 className="font-bold text-sm text-slate-100 tracking-wide">QUANT AI</h1>
+          <h1 className="font-bold text-sm text-slate-100 tracking-wide uppercase">STOCK ANALYSER</h1>
           <p className="text-[10px] text-indigo-400 font-medium">INDIA RESEARCH PLATFORM</p>
         </div>
       </div>
@@ -68,11 +63,11 @@ export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       {/* Bottom Status Card */}
       <div className="p-4 border-t border-slate-900 m-4 rounded-xl bg-slate-900/40 border border-slate-800/60">
         <div className="flex items-center justify-between text-xs mb-1">
-          <span className="text-slate-400 font-medium">Scoring Engine</span>
-          <span className="text-emerald-400 text-[10px] font-mono">QUANT-V1</span>
+          <span className="text-slate-400 font-medium">Prediction Engine</span>
+          <span className="text-emerald-400 text-[10px] font-mono">STOCK-ANALYSER-V1</span>
         </div>
         <p className="text-[11px] text-slate-500 leading-relaxed">
-          Deterministic quantitative calculation active prior to AI Agent synthesis.
+          Pre-market machine learning direction prediction engine active.
         </p>
       </div>
     </aside>
