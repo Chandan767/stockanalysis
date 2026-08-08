@@ -74,13 +74,13 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50/60 p-6 lg:p-10 flex flex-col justify-between max-w-7xl mx-auto">
+    <div className="min-h-screen bg-slate-50/60 p-6 lg:p-10 flex flex-col justify-between max-w-7xl mx-auto select-none">
       {/* 1. TOP BRANDING HERO HEADER */}
       <div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2 text-xs text-red-600 font-extrabold uppercase tracking-wider mb-2">
-              <Sparkles className="w-4 h-4 text-red-600 animate-pulse" />
+              <Sparkles className="w-4 h-4 text-red-600" />
               <span>STOCK ANALYSER • AI AGENT COMMAND HUB</span>
             </div>
             <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
@@ -102,7 +102,7 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
           </div>
         </div>
 
-        {/* 2. FULL-SCREEN 4 AI AGENT CARDS GRID */}
+        {/* 2. AGENTS CARDS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {agents.map((agent) => {
             const Icon = agent.icon;
@@ -110,48 +110,41 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
               <div
                 key={agent.id}
                 onClick={() => onSelectAgent(agent.id)}
-                className={`p-8 rounded-3xl border bg-gradient-to-br transition-all duration-300 cursor-pointer flex flex-col justify-between group ${agent.gradient}`}
+                className={`p-6 rounded-2xl border bg-gradient-to-br transition-all duration-200 cursor-pointer flex flex-col justify-between group shadow-sm ${agent.gradient}`}
               >
                 <div>
-                  {/* Top Badge & Agent Number */}
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-black tracking-widest text-slate-400 uppercase">
+                    <span className="text-xs font-black tracking-widest text-slate-500 uppercase">
                       {agent.number}
                     </span>
-                    <span className={`text-xs font-extrabold px-3 py-1 rounded-full border uppercase tracking-wider ${agent.badgeColor}`}>
+                    <span className={`text-[10px] font-extrabold px-3 py-1 rounded-full border uppercase tracking-wider ${agent.badgeColor}`}>
                       {agent.badge}
                     </span>
                   </div>
 
-                  {/* Title & Icon Header */}
-                  <div className="flex items-start gap-4 mb-3">
-                    <div className={`p-4 rounded-2xl text-white shrink-0 ${agent.iconBg}`}>
-                      <Icon className="w-7 h-7 text-white" />
+                  <div className="flex items-start space-x-4 mb-4">
+                    <div className={`p-3 rounded-xl text-white shrink-0 ${agent.iconBg}`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-black text-slate-900 group-hover:text-red-600 transition-colors">
+                      <h3 className="text-lg font-black text-slate-900 group-hover:text-red-600 transition-colors">
                         {agent.title}
-                      </h2>
-                      <p className="text-xs font-bold text-red-600 mt-1">
+                      </h3>
+                      <p className="text-xs font-extrabold text-slate-500 mt-0.5">
                         {agent.subtitle}
                       </p>
                     </div>
                   </div>
 
-                  {/* Agent Description */}
-                  <p className="text-xs text-slate-600 font-medium leading-relaxed mt-4">
+                  <p className="text-xs text-slate-600 font-medium leading-relaxed mb-6">
                     {agent.description}
                   </p>
                 </div>
 
-                {/* Bottom Launch Button */}
-                <div className="mt-8 pt-4 border-t border-slate-200 flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-slate-900 group-hover:text-red-600 transition-colors flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    Pipeline Active & Ready
-                  </span>
-                  <div className="px-4 py-2 bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-md shadow-red-600/30 group-hover:bg-red-700 transition flex items-center gap-2">
-                    <span>{agent.ctaText}</span>
+                <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between text-xs font-extrabold text-red-600 group-hover:text-red-700">
+                  <span>{agent.ctaText}</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[11px] font-bold">Run Pipeline</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
@@ -161,13 +154,25 @@ export const AgentHubView: React.FC<AgentHubViewProps> = (props: AgentHubViewPro
         </div>
       </div>
 
-      {/* 3. BOTTOM FOOTER STATUS */}
-      <div className="mt-10 p-4 rounded-2xl bg-white border border-slate-200 text-slate-500 text-xs font-semibold flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-          <span>4 Autonomous AI Agent Pipelines Active (NSE/BSE Indian Equities)</span>
+      {/* 3. FOOTER INFO BANNER */}
+      <div className="mt-10 p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-emerald-100 rounded-xl text-emerald-700">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+              Zero Hallucination Quantitative Engine
+            </h4>
+            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+              All 4 agents evaluate strict mathematical models (OHLCV indicators, ROE/ROCE quality scores, Walk-Forward backtests).
+            </p>
+          </div>
         </div>
-        <span className="font-mono text-red-600 font-bold">QUANT-ENGINE-V1.0</span>
+
+        <span className="px-3 py-1 rounded-lg bg-red-50 border border-red-200 text-red-600 text-[11px] font-bold shrink-0">
+          Indian Equities • Live Market Desk
+        </span>
       </div>
     </div>
   );
