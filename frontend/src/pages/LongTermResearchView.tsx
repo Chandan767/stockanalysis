@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Target, Activity, ArrowUpRight } from 'lucide-react';
 import { fetchLongTermResearch } from '../services/api';
@@ -7,7 +8,9 @@ interface LongTermResearchViewProps {
   onSelectStock: (symbol: string) => void;
 }
 
-export const LongTermResearchView = ({ onSelectStock }: LongTermResearchViewProps) => {
+export const LongTermResearchView: React.FC<LongTermResearchViewProps> = (props: LongTermResearchViewProps) => {
+  const { onSelectStock } = props;
+
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -20,9 +23,9 @@ export const LongTermResearchView = ({ onSelectStock }: LongTermResearchViewProp
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 text-slate-400 text-sm space-x-2">
-        <Activity className="w-5 h-5 animate-spin text-indigo-500" />
-        <span>Evaluating long-term growth, ROE/ROCE profitability, and valuation matrices...</span>
+      <div className="flex items-center justify-center h-64 text-slate-700 font-bold text-sm space-x-2">
+        <Activity className="w-5 h-5 animate-spin text-red-600" />
+        <span>5Y Growth Agent evaluating long-term growth, ROE/ROCE profitability, and valuation matrices...</span>
       </div>
     );
   }
@@ -32,78 +35,78 @@ export const LongTermResearchView = ({ onSelectStock }: LongTermResearchViewProp
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <div className="flex items-center space-x-2 text-xs text-indigo-400 font-semibold uppercase tracking-wider mb-1">
-            <Target className="w-4 h-4" />
-            <span>Research Mode • Long-Term Stock Research</span>
+          <div className="flex items-center space-x-2 text-xs text-red-600 font-bold uppercase tracking-wider mb-1">
+            <Target className="w-4 h-4 text-red-600" />
+            <span>Autonomous AI Agent • 5Y Growth & Value Agent</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-100">Long-Term Quality Scoring Engine</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Multidimensional evaluation of revenue/profit growth, ROE/ROCE profitability, debt trends, free cash flow, and valuation multiples.
+          <h1 className="text-2xl font-black text-slate-900">Long-Term Wealth Compounder Agent</h1>
+          <p className="text-xs text-slate-500 font-medium mt-1">
+            Multidimensional audit evaluating 5-year revenue/profit growth trajectories, ROE/ROCE profitability, debt trends, free cash flow, and valuation multiples.
           </p>
         </div>
       </div>
 
       {/* Candidates List Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {list.map((item) => (
+        {list.map((item: LongTermScoreResult) => (
           <div 
             key={item.symbol}
             onClick={() => onSelectStock(item.symbol)}
-            className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer space-y-4 group"
+            className="p-6 rounded-2xl bg-white border border-slate-200 hover:border-red-500 hover:shadow-md transition-all cursor-pointer space-y-4 group"
           >
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-lg font-bold text-slate-100 group-hover:text-indigo-400 transition-colors flex items-center space-x-2">
+                <h3 className="text-xl font-black text-slate-900 group-hover:text-red-600 transition-colors flex items-center space-x-2">
                   <span>{item.symbol}</span>
-                  <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-indigo-400" />
+                  <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-red-600" />
                 </h3>
-                <span className={`inline-block mt-1 px-3 py-0.5 rounded-full text-[10px] font-bold ${
-                  item.classification.includes('Strong') 
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                    : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                <span className={`inline-block mt-1 px-3 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                  item.classification.includes('Strong') || item.classification.includes('Compounder')
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-red-50 text-red-700 border border-red-200'
                 }`}>
                   {item.classification}
                 </span>
               </div>
 
               <div className="text-right">
-                <span className="text-xs text-slate-400 block font-medium">Long-Term Score</span>
-                <span className="text-2xl font-bold font-mono text-emerald-400">{item.long_term_score}/100</span>
+                <span className="text-xs text-slate-500 font-bold block">Long-Term Quality Score</span>
+                <span className="text-2xl font-black font-mono text-emerald-600">{item.long_term_score}/100</span>
               </div>
             </div>
 
             {/* Quality Score Metrics Grid */}
             <div className="grid grid-cols-3 gap-2.5 pt-2 text-xs">
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900 text-center">
-                <span className="text-slate-500 text-[10px] block">Fundamental Quality</span>
-                <span className="font-mono font-bold text-slate-200">{item.fundamental_quality_score}</span>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span className="text-slate-500 text-[10px] font-bold block">Fundamental Quality</span>
+                <span className="font-mono font-black text-slate-900 text-sm">{item.fundamental_quality_score}</span>
               </div>
 
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900 text-center">
-                <span className="text-slate-500 text-[10px] block">Growth</span>
-                <span className="font-mono font-bold text-slate-200">{item.growth_score}</span>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span className="text-slate-500 text-[10px] font-bold block">Growth</span>
+                <span className="font-mono font-black text-slate-900 text-sm">{item.growth_score}</span>
               </div>
 
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900 text-center">
-                <span className="text-slate-500 text-[10px] block">Profitability (ROE)</span>
-                <span className="font-mono font-bold text-slate-200">{item.profitability_score}</span>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span className="text-slate-500 text-[10px] font-bold block">Profitability (ROE)</span>
+                <span className="font-mono font-black text-slate-900 text-sm">{item.profitability_score}</span>
               </div>
 
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900 text-center">
-                <span className="text-slate-500 text-[10px] block">Balance Sheet</span>
-                <span className="font-mono font-bold text-slate-200">{item.balance_sheet_score}</span>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span className="text-slate-500 text-[10px] font-bold block">Balance Sheet</span>
+                <span className="font-mono font-black text-slate-900 text-sm">{item.balance_sheet_score}</span>
               </div>
 
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900 text-center">
-                <span className="text-slate-500 text-[10px] block">Cash Flow</span>
-                <span className="font-mono font-bold text-slate-200">{item.cash_flow_score}</span>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span className="text-slate-500 text-[10px] font-bold block">Cash Flow</span>
+                <span className="font-mono font-black text-slate-900 text-sm">{item.cash_flow_score}</span>
               </div>
 
-              <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-900 text-center">
-                <span className="text-slate-500 text-[10px] block">Valuation</span>
-                <span className="font-mono font-bold text-slate-200">{item.valuation_score}</span>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                <span className="text-slate-500 text-[10px] font-bold block">Valuation</span>
+                <span className="font-mono font-black text-slate-900 text-sm">{item.valuation_score}</span>
               </div>
             </div>
           </div>
