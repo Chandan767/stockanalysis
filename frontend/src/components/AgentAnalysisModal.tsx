@@ -7,7 +7,8 @@ import {
   TrendingDown, 
   ArrowUpRight, 
   ShieldAlert,
-  Calendar
+  Calendar,
+  RotateCw
 } from 'lucide-react';
 import { AgentAnalysisReport, AgentStockInsight } from '../types';
 
@@ -17,10 +18,11 @@ interface AgentAnalysisModalProps {
   report: AgentAnalysisReport | null;
   loading: boolean;
   onSelectStock: (symbol: string) => void;
+  onRetry?: () => void;
 }
 
 export const AgentAnalysisModal: React.FC<AgentAnalysisModalProps> = (props: AgentAnalysisModalProps) => {
-  const { isOpen, onClose, report, loading, onSelectStock } = props;
+  const { isOpen, onClose, report, loading, onSelectStock, onRetry } = props;
   if (!isOpen) return null;
 
   return (
@@ -65,8 +67,17 @@ export const AgentAnalysisModal: React.FC<AgentAnalysisModalProps> = (props: Age
               </div>
             </div>
           ) : !report ? (
-            <div className="text-center py-12 text-slate-500 font-medium">
-              <p>Failed to execute AI Agent Analysis. Please check server connectivity.</p>
+            <div className="text-center py-12 text-slate-600 space-y-4">
+              <p className="font-semibold text-sm">Failed to execute AI Agent Analysis. Please check server connectivity.</p>
+              {onRetry && (
+                <button
+                  onClick={onRetry}
+                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-md shadow-red-600/30 transition flex items-center gap-2 mx-auto"
+                >
+                  <RotateCw className="w-4 h-4 text-white" />
+                  <span>Retry AI Agent Scan</span>
+                </button>
+              )}
             </div>
           ) : (
             <>

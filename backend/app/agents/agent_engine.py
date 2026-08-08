@@ -1,3 +1,4 @@
+import math
 import asyncio
 from typing import List, Dict, Any
 from datetime import date, datetime, timezone, timedelta
@@ -11,6 +12,18 @@ from app.services.sentiment_service import analyze_news_sentiment
 from app.services.research_service import TOP_INDIAN_STOCKS
 from app.engine.prediction_pipeline import calculate_calibrated_probabilities
 from app.services.global_market_service import get_global_market_features
+
+
+def clean_float(val: Any, default: float = 0.0) -> float:
+    if val is None:
+        return default
+    try:
+        f = float(val)
+        if math.isnan(f) or math.isinf(f):
+            return default
+        return round(f, 2)
+    except (ValueError, TypeError):
+        return default
 
 
 class AgentStockInsight(BaseModel):
@@ -75,13 +88,14 @@ async def analyze_single_stock_insight(stock: Dict[str, str], global_report: Any
         if hist_5y and len(hist_5y) > 10:
             prices = [h.close for h in hist_5y if h.close > 0]
             if prices:
-                high_5y = round(max(prices), 2)
-                low_5y = round(min(prices), 2)
+                high_5y = clean_float(max(prices))
+                low_5y = clean_float(min(prices))
                 start_p = prices[0]
                 end_p = prices[-1]
                 years = len(hist_5y) / 252.0
-                if start_p > 0 and years > 0:
-                    cagr_5y = round((((end_p / start_p) ** (1.0 / years)) - 1.0) * 100.0, 2)
+                if start_p > 0 and years > 0 and (end_p / start_p) > 0:
+                    cagr_calc = (((end_p / start_p) ** (1.0 / years)) - 1.0) * 100.0
+                    cagr_5y = clean_float(cagr_calc)
 
                 if cagr_5y >= 15.0:
                     trend_5y = "Strong 5-Year Uptrend"
@@ -102,23 +116,27 @@ async def analyze_single_stock_insight(stock: Dict[str, str], global_report: Any
             sent_scores.append(s_score)
         avg_sent = (sum(sent_scores) / len(sent_scores) / 100.0) if sent_scores else 0.0
 
-        sp500_ret = global_report.signals.us_overnight_sp500_return if global_report else 0.5
-        nasdaq_ret = global_report.signals.us_overnight_nasdaq_return if global_report else 0.5
+        sp500_ret = global_report.signals.us_overnight_sp500_return if global_report and global_report.signals else 0.5
+        nasdaq_ret = global_report.signals.us_overnight_nasdaq_return if global_report and global_report.signals else 0.5
 
         # ML Calibrated Probabilities Engine
-        ret_5d = ((hist_90d[-1].close - hist_90d[-6].close) / hist_90d[-6].close * 100.0) if len(hist_90d) >= 6 else 0.0
+        ret_5d = 0.0
+        if len(hist_90d) >= 6 and hist_90d[-6].close > 0:
+            ret_5d = ((hist_90d[-1].close - hist_90d[-6].close) / hist_90d[-6].close) * 100.0
+        ret_5d = clean_float(ret_5d)
+
         (p_up, p_down, p_neu, direction, confidence, exp_ret, exp_low, exp_high) = calculate_calibrated_probabilities(
             tech_return_5d=ret_5d,
-            tech_rsi=tech.rsi_14 or 50.0,
-            macd_hist=tech.macd_hist or 0.0,
-            us_sp500_ret=sp500_ret,
-            us_nasdaq_ret=nasdaq_ret,
-            news_weighted_score=avg_sent,
-            relative_nifty_5d=ret_5d * 0.2,
+            tech_rsi=clean_float(tech.rsi_14, 50.0),
+            macd_hist=clean_float(tech.macd_hist, 0.0),
+            us_sp500_ret=clean_float(sp500_ret, 0.5),
+            us_nasdaq_ret=clean_float(nasdaq_ret, 0.5),
+            news_weighted_score=clean_float(avg_sent, 0.0),
+            relative_nifty_5d=clean_float(ret_5d * 0.2, 0.0),
             adx_val=30.0
         )
 
-        prob_score = round((today_score.today_opportunity_score * 0.5) + (lt_score.long_term_score * 0.5), 1)
+        prob_score = clean_float((today_score.today_opportunity_score * 0.5) + (lt_score.long_term_score * 0.5), 50.0)
 
         strengths = []
         risks = []
@@ -128,15 +146,15 @@ async def analyze_single_stock_insight(stock: Dict[str, str], global_report: Any
         if tech.trend_20_50 == "Bullish":
             strengths.append("Short-term moving average golden alignment (SMA 20 > SMA 50).")
         if fund.roe and fund.roe > 20.0:
-            strengths.append(f"High Return on Equity (ROE: {fund.roe}%).")
+            strengths.append(f"High Return on Equity (ROE: {clean_float(fund.roe)}%).")
 
         if not strengths:
             strengths.append("Established market capitalization in NSE sector index.")
 
         if tech.rsi_14 and tech.rsi_14 > 70.0:
-            risks.append(f"Near-term overbought technical conditions (RSI: {tech.rsi_14}).")
+            risks.append(f"Near-term overbought technical conditions (RSI: {clean_float(tech.rsi_14)}).")
         if fund.debt_to_equity and fund.debt_to_equity > 1.0:
-            risks.append(f"Leveraged balance sheet (Debt/Equity: {fund.debt_to_equity}).")
+            risks.append(f"Leveraged balance sheet (Debt/Equity: {clean_float(fund.debt_to_equity)}).")
 
         if not risks:
             risks.append("Broader macroeconomic market volatility.")
@@ -155,26 +173,26 @@ async def analyze_single_stock_insight(stock: Dict[str, str], global_report: Any
             symbol=sym,
             name=name,
             sector=sector,
-            current_price=quote.price,
-            five_year_cagr=cagr_5y,
-            five_year_high=high_5y,
-            five_year_low=low_5y,
+            current_price=clean_float(quote.price if quote else 0.0),
+            five_year_cagr=clean_float(cagr_5y),
+            five_year_high=clean_float(high_5y),
+            five_year_low=clean_float(low_5y),
             five_year_trend=trend_5y,
-            probability_score=prob_score,
+            probability_score=clean_float(prob_score, 50.0),
             predicted_direction=direction,
-            up_probability=p_up,
-            down_probability=p_down,
-            neutral_probability=p_neu,
-            expected_return_pct=exp_ret,
-            expected_return_low=exp_low,
-            expected_return_high=exp_high,
+            up_probability=clean_float(p_up, 0.3333),
+            down_probability=clean_float(p_down, 0.3333),
+            neutral_probability=clean_float(p_neu, 0.3334),
+            expected_return_pct=clean_float(exp_ret),
+            expected_return_low=clean_float(exp_low, -0.5),
+            expected_return_high=clean_float(exp_high, 0.5),
             projected_bias=projected_bias,
             confidence=confidence,
             agent_reasoning=reasoning,
             strengths=strengths,
             risk_factors=risks
         )
-    except Exception:
+    except Exception as exc:
         return AgentStockInsight(
             symbol=sym,
             name=name,
@@ -223,7 +241,7 @@ async def run_autonomous_agent_analysis(use_mock: bool = False) -> AgentAnalysis
 
     market_verdict = (
         f"Autonomous Web Search Agent completed 5-year trajectory audit of {len(insights)} NSE/BSE equities. "
-        f"Global risk regime is '{global_report.signals.global_risk_regime}'."
+        f"Global risk regime is '{global_report.signals.global_risk_regime if (global_report and global_report.signals) else 'Balanced'}'."
     )
 
     return AgentAnalysisReport(

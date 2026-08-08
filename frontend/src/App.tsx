@@ -28,15 +28,20 @@ export const App: React.FC = () => {
   const handleOpenAgentModal = async () => {
     setAgentModalOpen(true);
     if (!agentReport && !agentLoading) {
-      setAgentLoading(true);
-      try {
-        const report = await fetchAgentAnalysis();
-        setAgentReport(report);
-      } catch (err) {
-        console.error('Agent analysis error:', err);
-      } finally {
-        setAgentLoading(false);
-      }
+      loadAgentReport();
+    }
+  };
+
+  const loadAgentReport = async () => {
+    setAgentLoading(true);
+    try {
+      const report = await fetchAgentAnalysis();
+      setAgentReport(report);
+    } catch (err) {
+      console.error('Agent analysis error:', err);
+      setAgentReport(null);
+    } finally {
+      setAgentLoading(false);
     }
   };
 
@@ -95,6 +100,7 @@ export const App: React.FC = () => {
         report={agentReport}
         loading={agentLoading}
         onSelectStock={handleSelectStock}
+        onRetry={loadAgentReport}
       />
     </div>
   );
