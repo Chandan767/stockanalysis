@@ -119,34 +119,20 @@ export interface FullStockResearchReport {
   ai_summary: AISummaryReport;
 }
 
-export interface MarketIndexInfo {
-  name: string;
-  value: number;
-  change: number;
-  percent_change: number;
-  trend: string;
-}
-
-export interface MarketOverviewData {
-  status: string;
-  market_regime: string;
-  volatility_regime: string;
-  indices: {
-    NIFTY_50: MarketIndexInfo;
-    SENSEX: MarketIndexInfo;
-    NIFTY_BANK: MarketIndexInfo;
-  };
-  strong_sectors: string[];
-  weak_sectors: string[];
-  timestamp: string;
-}
-
 export interface AgentStockInsight {
   symbol: string;
   name: string;
   sector: string;
   current_price: number;
-  five_year_cagr: number;
+  target_price_1y: number;
+  pe_ratio: number;
+  roe: number;
+  revenue_growth_3y: number;
+  profit_growth_3y: number;
+  debt_to_equity: number;
+  free_cash_flow: number;
+  rsi_14: number;
+  sma_20_50_cross: string;
   five_year_high: number;
   five_year_low: number;
   five_year_trend: string;
@@ -231,10 +217,20 @@ export interface InterMarketSignals {
   global_risk_regime: string;
 }
 
+export interface GlobalNewsItem {
+  title: string;
+  summary: string;
+  source: string;
+  region: string;
+  sentiment: 'Positive' | 'Negative' | 'Neutral';
+  impact_reason: string;
+}
+
 export interface GlobalMarketReport {
   timestamp: string;
   items: GlobalMarketItem[];
   signals: InterMarketSignals;
+  live_news_feed?: GlobalNewsItem[];
 }
 
 export interface DailyBacktestStep {
@@ -267,4 +263,3 @@ export interface BacktestSummaryReport {
   max_drawdown_pct: number;
   daily_history: DailyBacktestStep[];
 }
-

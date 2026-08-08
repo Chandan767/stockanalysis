@@ -14,7 +14,8 @@ import {
   Building2,
   Filter,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Newspaper
 } from 'lucide-react';
 import {
   DailyMarketPredictionReport,
@@ -178,7 +179,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
       <div className="flex flex-col items-center justify-center min-h-[65vh] gap-4">
         <div className="animate-spin rounded-full h-14 w-14 border-b-4 border-red-600"></div>
         <p className="text-slate-900 font-extrabold text-base">
-          Agent 01 Evaluating Pre-Market Predictions Across 2,075+ NSE & BSE Listed Equities...
+          Agent 01 Crawling Live US Markets & News NLP Across 2,075+ NSE & BSE Equities...
         </p>
       </div>
     );
@@ -214,7 +215,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
               Pre-Market Profit & Loss Direction Predictions
             </h1>
             <p className="text-slate-600 text-sm mt-1.5 max-w-3xl leading-relaxed font-medium">
-              Supervised Machine Learning evaluation across all <strong>2,075+ NSE & BSE registered equities</strong> for {predictions.prediction_date}. Evaluates overnight US market cues, Brent crude, USD/INR, news NLP sentiment, and technical momentum.
+              Supervised Machine Learning evaluation across all <strong>2,075+ NSE & BSE registered equities</strong> for {predictions.prediction_date}. Evaluates overnight US market cues (S&P 500, Nasdaq), Brent crude, USD/INR, real-time news NLP, and technical momentum.
             </p>
           </div>
 
@@ -229,7 +230,7 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
             <button
               onClick={loadData}
               className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200 transition"
-              title="Refresh Predictions"
+              title="Refresh Live News & Predictions"
             >
               <RotateCw className="w-4 h-4 text-red-600" />
             </button>
@@ -308,7 +309,67 @@ export const DashboardView: React.FC<DashboardViewProps> = (props: DashboardView
         </div>
       </div>
 
-      {/* 3. PREDICTION TABLE & SEARCH DIRECTORY FOR ALL STOCKS */}
+      {/* 3. LIVE US & GLOBAL MARKET NEWS FEED WIDGET */}
+      {globals?.live_news_feed && globals.live_news_feed.length > 0 && (
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <Newspaper className="w-5 h-5 text-red-600" />
+              <div>
+                <h3 className="text-base font-black text-slate-900">
+                  Live US & Global Market News Updates
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Real-time Wall Street, Federal Reserve, crude oil, and company headlines driving today's predictions.
+                </p>
+              </div>
+            </div>
+            <span className="px-3 py-1 bg-red-50 text-red-600 font-extrabold text-[10px] uppercase rounded-full border border-red-200">
+              Live Stream
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {globals.live_news_feed.map((item, idx) => (
+              <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-slate-200 text-slate-700 uppercase">
+                      {item.region}
+                    </span>
+                    <span
+                      className={`text-[10px] font-black px-2 py-0.5 rounded ${
+                        item.sentiment === 'Positive'
+                          ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                          : item.sentiment === 'Negative'
+                          ? 'bg-red-100 text-red-700 border border-red-200'
+                          : 'bg-slate-200 text-slate-700'
+                      }`}
+                    >
+                      {item.sentiment}
+                    </span>
+                  </div>
+
+                  <h4 className="font-black text-xs text-slate-900 leading-snug line-clamp-2 mt-1">
+                    {item.title}
+                  </h4>
+                  <p className="text-[11px] text-slate-600 font-medium mt-1">
+                    {item.summary}
+                  </p>
+                </div>
+
+                <div className="pt-2 border-t border-slate-200/80 mt-2">
+                  <p className="text-[10px] text-red-600 font-bold italic">
+                    Impact: {item.impact_reason}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 4. PREDICTION TABLE & SEARCH DIRECTORY FOR ALL STOCKS */}
       <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
