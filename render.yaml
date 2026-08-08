@@ -1,33 +1,14 @@
 services:
-  # 1. FastAPI Python Backend Service
+  # Single Unified Full-Stack Web Service (FastAPI Backend + React Frontend SPA)
   - type: web
-    name: stock-ai-backend
+    name: stockanalysis
     env: python
     region: oregon
     plan: free
-    rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && pip install -r requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
         value: sqlite:///./stock_db.db
       - key: PYTHON_VERSION
         value: 3.11.8
-
-  # 2. React + Vite Frontend Static Site
-  - type: web
-    name: stock-ai-frontend
-    env: static
-    plan: free
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    routes:
-      # Proxy all /api/* requests to Render FastAPI Backend Service
-      - type: rewrite
-        source: /api/*
-        destination: https://stock-ai-backend.onrender.com/api/*
-      # Single Page Application (SPA) catch-all fallback route
-      - type: rewrite
-        source: /*
-        destination: /index.html

@@ -61,14 +61,37 @@ def on_startup():
         print(f"Scheduler startup notice: {e}")
 
 
-@app.get("/")
-async def root():
-    return {
-        "message": f"Welcome to {settings.APP_NAME}",
-        "docs": "/docs",
-        "health": "/api/v1/health",
-        "stocks": "/api/v1/stocks",
-        "research_today": "/api/v1/research/today",
-        "research_long_term": "/api/v1/research/long-term",
-        "market_overview": "/api/v1/market/overview"
-    }
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# Check for production built React frontend (frontend/dist)
+frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+
+if os.path.exists(frontend_dist):
+    assets_dir = os.path.join(frontend_dist, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api/") or full_path in ["docs", "redoc", "openapi.json"]:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="API route not found")
+        
+        target_file = os.path.join(frontend_dist, full_path)
+        if os.path.isfile(target_file):
+            return FileResponse(target_file)
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
+else:
+    @app.get("/")
+    async def root():
+        return {
+            "message": f"Welcome to {settings.APP_NAME}",
+            "docs": "/docs",
+            "health": "/api/v1/health",
+            "stocks": "/api/v1/stocks",
+            "research_today": "/api/v1/research/today",
+            "research_long_term": "/api/v1/research/long-term",
+            "market_overview": "/api/v1/market/overview"
+        }
